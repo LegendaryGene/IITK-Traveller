@@ -31,5 +31,11 @@
 #define hall_13_2           30      // mem[mem_2] = 0
 #define hall_13_3           31      // mem[mem_3] = 0
 #define hall_13_c           32      // cond = 0
+#define rm_1                33      // mem_1++
+#define rm_2                34      // mem_2++
+#define rm_3                35      // mem_3++
+#define kd_1                36      // mem_1--
+#define kd_2                37      // mem_2--
+#define kd_3                38      // mem_3--
 
-#define num_ops 33
+#define num_ops             39

@@ -43,6 +43,12 @@ map<string, int> ops = {
     {"hall_13_2", hall_13_2},
     {"hall_13_3", hall_13_3},
     {"hall_13_c", hall_13_c},
+    {"rm_1", rm_1},
+    {"rm_2", rm_2},
+    {"rm_3", rm_3},
+    {"kd_1", kd_1},
+    {"kd_2", kd_2},
+    {"kd_3", kd_3},
 };
 
 vector<int> mem(2048, 0);
@@ -230,7 +236,26 @@ void operations (int operation) {
         case hall_13_c:
             cond = 0;
             break;
-            
+
+        case rm_1:
+            mem_1++;
+            break;
+        case rm_2:
+            mem_2++;
+            break;
+        case rm_3:
+            mem_3++;
+            break;
+        case kd_1:
+            mem_1--;
+            break;
+        case kd_2:
+            mem_2--;
+            break;
+        case kd_3:
+            mem_3--;
+            break;
+
         default:
             cout << "No such operation exists" << endl;
     }
