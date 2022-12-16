@@ -15,6 +15,7 @@ where
 }
 
 fn store_input(filename: &String) {
+    let mut tokens: Vec<Vec<String>> = Vec::new();
     let lines: Lines<BufReader<File>> =
         read_lines(filename).expect("Error in reading file!");
     let mut linenum = 0;
@@ -26,8 +27,28 @@ fn store_input(filename: &String) {
             }
         };
         linenum += 1;
-        let trim_line = line.trim();
-        println!("{}", trim_line);
+        let s1 = line.replace(";", "");
+        let s2 = s1.trim();
+        if s2.len() > 0 {
+            // One word detected.
+            let s2_iter = s2.split(",");
+            for s in s2_iter {
+                let word = s.trim().to_string();
+                if word.len() == 0 {
+                    panic!(
+                        "Incorrect number of parameters in line {}",
+                        linenum
+                    );
+                }
+                tokens.push(Vec::new());
+                tokens[linenum - 1].push(word);
+            }
+            if tokens[linenum - 1].len() != 3 {
+                panic!("Incorrect number of parameters in line {}", linenum);
+            }
+        } else {
+            panic!("Incorrect number of parameters in line {}", linenum);
+        }
     }
 }
 
