@@ -1,0 +1,1 @@
+/media/kartik/Data/Coding\ and\ Animation/Projects/Esolang\ Compiler\ Design/IITK-Traveller/iitk_traveller/target/debug/iitk_traveller: /media/kartik/Data/Coding\ and\ Animation/Projects/Esolang\ Compiler\ Design/IITK-Traveller/iitk_traveller/src/main.rs
