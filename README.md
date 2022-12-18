@@ -25,15 +25,6 @@ The starting landmark is `start` and the ending landmark is `finish`.
 ## Commands and Expressions
 
 <div align = "center">
-<style>
-table, th, td
-{
-  border: 1px solid black;
-  padding-left: 200px;
-  padding-right: 200px;
-  text-align: center;
-}
-</style>
 <table>
 <tr><th>IITK LANDMARK              </th><th>            COMMAND</th></tr>
 <tr><td>start                      </th><td>            start</th></td>
