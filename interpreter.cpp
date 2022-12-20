@@ -207,7 +207,7 @@ void operations (int operation) {
                 curr_lm = lecture_hall_lt_f;
             break;
         case lecture_hall_eq:
-            if(mem[mem_1] >= mem[mem_2])
+            if(mem[mem_1] == mem[mem_2])
                 curr_lm = lecture_hall_eq_t;
             else
                 curr_lm = lecture_hall_eq_f;
