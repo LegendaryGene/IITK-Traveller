@@ -37,5 +37,9 @@
 #define kd_1                36      // mem_1--
 #define kd_2                37      // mem_2--
 #define kd_3                38      // mem_3--
+#define eshop_1             39      // mem[mem_1] = mem[mem_1]*mem[mem_1]
+#define eshop_2             40      // mem[mem_2] = mem[mem_2]*mem[mem_2]
+#define doaa_1              41      // output ascii char corresponding to mem[mem_1]
+#define doaa_2              42      // output ascii char corresponding to mem[mem_2]
 
-#define num_ops             39
+#define num_ops             43

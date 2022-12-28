@@ -26,6 +26,8 @@ map<string, int> ops = {
     {"mt_3_2", mt_3_2},
     {"iit_gate_out_1", iit_gate_out_1},
     {"iit_gate_out_2", iit_gate_out_2},
+    {"doaa_1", doaa_1},
+    {"doaa_2", doaa_2},
     {"lecture_hall_gt", lecture_hall_gt},
     {"lecture_hall_gt_t", lecture_hall_gt_t},
     {"lecture_hall_gt_f", lecture_hall_gt_f},
@@ -51,6 +53,8 @@ map<string, int> ops = {
     {"kd_1", kd_1},
     {"kd_2", kd_2},
     {"kd_3", kd_3},
+    {"eshop_1", eshop_1},
+    {"eshop_2", eshop_2},
 };
 
 vector<int> mem(2048, 0);
@@ -156,7 +160,6 @@ void operations(int operation) {
         case iit_gate_in_2:
             cin >> mem[mem_2];
             break;
-
         case hall_2:
             mem[mem_3] = mem[mem_1] + mem[mem_2];
             break;
@@ -189,7 +192,12 @@ void operations(int operation) {
         case iit_gate_out_2:
             cout << mem[mem_2] << endl;
             break;
-
+        case doaa_1:
+            cout<< (char)mem[mem_1] << endl;
+            break;
+        case doaa_2:
+            cout<< (char)mem[mem_2] << endl;
+            break;
         case lecture_hall_gt:
             if (mem[mem_1] > mem[mem_2])
                 curr_lm = lecture_hall_gt_t;
@@ -203,7 +211,7 @@ void operations(int operation) {
                 curr_lm = lecture_hall_lt_f;
             break;
         case lecture_hall_eq:
-            if (mem[mem_1] >= mem[mem_2])
+            if(mem[mem_1] == mem[mem_2])
                 curr_lm = lecture_hall_eq_t;
             else
                 curr_lm = lecture_hall_eq_f;
@@ -259,7 +267,12 @@ void operations(int operation) {
         case kd_3:
             mem_3--;
             break;
-
+        case eshop_1:
+            mem[mem_1]=mem[mem_1]*mem[mem_1];
+            break;
+        case eshop_2:
+            mem[mem_2]=mem[mem_2]*mem[mem_2];
+            break;
         default:
             cout << "No such operation exists" << endl;
     }
