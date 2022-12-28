@@ -1,12 +1,14 @@
 #include <bits/stdc++.h>
-#include "operations.h"
+
 #include <boost/algorithm/string.hpp>
+
+#include "operations.h"
 
 using namespace boost::algorithm;
 using namespace std;
 
 vector<vector<string>> lines;
-vector<map<int,int>> graph(num_ops);
+vector<map<int, int>> graph(num_ops);
 int curr_lm;
 
 map<string, int> ops = {
@@ -60,34 +62,33 @@ int mem_1 = 0, mem_2 = 1, mem_3 = 2;
 int cond = 0;
 
 int input(char* file_name) {
-
     ifstream program_file(file_name);
 
     string program_line;
     int line_number = 0;
 
-    while(getline(program_file, program_line)) {
+    while (getline(program_file, program_line)) {
         trim(program_line);
         int eol = 0;
 
-        if(program_line.size() > 0)
-            lines.push_back(vector<string>(0));
+        if (program_line.size() > 0) lines.push_back(vector<string>(0));
 
         string curr_word = "";
 
-        for(auto c: program_line) {
-            if(eol == 1) {
-                cout << "Syntax error in line number " << line_number + 1 << endl;
+        for (auto c : program_line) {
+            if (eol == 1) {
+                cout << "Syntax error in line number " << line_number + 1
+                     << endl;
                 return 1;
             }
 
-            if(c == ',') {
+            if (c == ',') {
                 lines[line_number].push_back(curr_word);
                 curr_word = "";
                 continue;
             }
 
-            if(c == ';') {
+            if (c == ';') {
                 lines[line_number].push_back(curr_word);
                 curr_word = "";
                 eol = 1;
@@ -97,48 +98,51 @@ int input(char* file_name) {
             curr_word += c;
         }
 
-        if(eol != 1) {
+        if (eol != 1) {
             printf("Line %d: missing ;\n", line_number);
             return 1;
         }
 
-        line_number ++;
+        line_number++;
     }
 
-    for(int line = 0; line < lines.size(); line++) {
-        if(lines[line].size() != 3) {
+    for (int line = 0; line < lines.size(); line++) {
+        if (lines[line].size() != 3) {
             cout << "Syntax error in line number " << line + 1 << endl;
             return 1;
         }
 
-        for(int i = 0; i < 3; i++)
-            trim(lines[line][i]);
+        for (int i = 0; i < 3; i++) trim(lines[line][i]);
     }
 
     return 0;
 }
 
 int graph_builder(void) {
-    for(int line = 0; line < lines.size(); line++) {
+    for (int line = 0; line < lines.size(); line++) {
         string lm_1 = lines[line][0];
         string lm_2 = lines[line][2];
         int cond_val;
 
         try {
             cond_val = stoi(lines[line][1]);
-        }
-        catch(...) {
-            printf("Line %d: Given weight is not a valid integer value \n", line + 1);
+        } catch (...) {
+            printf("Line %d: Given weight is not a valid integer value \n",
+                   line + 1);
             return 1;
         }
 
-        if(ops.find(lm_1) == ops.end() || ops.find(lm_2) == ops.end()) {
-            printf("Line %d: Given landmark is not a valid landmark\n", line + 1);
+        if (ops.find(lm_1) == ops.end() || ops.find(lm_2) == ops.end()) {
+            printf("Line %d: Given landmark is not a valid landmark\n",
+                   line + 1);
             return 1;
         }
 
-        if(graph[ops[lm_1]].find(cond_val) != graph[ops[lm_1]].end()) {
-            printf("Line %d: Path with the given condition value already exists from the landmark\n", line + 1);
+        if (graph[ops[lm_1]].find(cond_val) != graph[ops[lm_1]].end()) {
+            printf(
+                "Line %d: Path with the given condition value already exists "
+                "from the landmark\n",
+                line + 1);
             return 1;
         }
 
@@ -148,8 +152,8 @@ int graph_builder(void) {
     return 0;
 }
 
-void operations (int operation) {
-    switch(operation) {
+void operations(int operation) {
+    switch (operation) {
         case iit_gate_in_1:
             cin >> mem[mem_1];
             break;
@@ -195,13 +199,13 @@ void operations (int operation) {
             cout<< (char)mem[mem_2] << endl;
             break;
         case lecture_hall_gt:
-            if(mem[mem_1] > mem[mem_2]) 
+            if (mem[mem_1] > mem[mem_2])
                 curr_lm = lecture_hall_gt_t;
             else
                 curr_lm = lecture_hall_gt_f;
             break;
         case lecture_hall_lt:
-            if(mem[mem_1] < mem[mem_2])
+            if (mem[mem_1] < mem[mem_2])
                 curr_lm = lecture_hall_lt_t;
             else
                 curr_lm = lecture_hall_lt_f;
@@ -275,13 +279,11 @@ void operations (int operation) {
 }
 
 int traveller() {
-    if(curr_lm == finish)
-        return 0;
-    
-    if(curr_lm != start)
-        operations(curr_lm);
+    if (curr_lm == finish) return 0;
 
-    if(graph[curr_lm].find(cond) == graph[curr_lm].end()) {
+    if (curr_lm != start) operations(curr_lm);
+
+    if (graph[curr_lm].find(cond) == graph[curr_lm].end()) {
         printf("Stuck in landmark number %d", curr_lm);
         cout << endl;
         return 1;
@@ -291,18 +293,16 @@ int traveller() {
     return traveller();
 }
 
-int main(int argc, char* argv[])
-{
-    if(argc != 2) {
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
         cout << "Wrong number of arguments\n";
         cout << "Usage: ./interpreter <filename>\n";
         return 1;
     }
 
-    int exit_code  = input(argv[1]);
+    int exit_code = input(argv[1]);
 
-    if(exit_code != 0)
-        return exit_code;
+    if (exit_code != 0) return exit_code;
 
     // for(int i = 0; i < lines.size(); i++){
     //     for(int j = 0; j < lines[i].size(); j++)
@@ -312,14 +312,12 @@ int main(int argc, char* argv[])
 
     exit_code = graph_builder();
 
-    if(exit_code != 0)
-        return exit_code;
+    if (exit_code != 0) return exit_code;
 
     curr_lm = start;
     exit_code = traveller();
 
-    if(exit_code != 0)
-        return exit_code;
+    if (exit_code != 0) return exit_code;
 
     return 0;
 }

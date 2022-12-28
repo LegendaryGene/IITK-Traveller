@@ -1,3 +1,21 @@
+mod lexer;
+mod traveller;
+
+use core::panic;
+use std::env;
+
 fn main() {
-    println!("New Rust Repo!");
+    let args: Vec<String> = env::args().collect();
+    let filename = match args.len() {
+        2 => &args[1],
+        _ => panic!("Invalid parameters. Usage: ./interpreter <filename>!"),
+    };
+
+    let mut mem = lexer::create_memorystrip(2048);
+    let tokens = lexer::store_input(filename);
+    let locations = lexer::create_map();
+    let graph = lexer::build_graph(&tokens, &locations);
+    let mut traveller = traveller::TravelStat::new(0, 1, 2, 0, 0);
+
+    traveller.travel(&mut mem, &locations, &graph);
 }
