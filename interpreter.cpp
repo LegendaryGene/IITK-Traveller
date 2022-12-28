@@ -71,7 +71,10 @@ int input(char* file_name) {
         trim(program_line);
         int eol = 0;
 
-        if (program_line.size() > 0) lines.push_back(vector<string>(0));
+        if (program_line.size() > 0) 
+            lines.push_back(vector<string>(0));
+        else
+            continue;
 
         string curr_word = "";
 

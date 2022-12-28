@@ -4,14 +4,6 @@ use std::fs::File;
 use std::io::{self, BufRead, BufReader, Lines};
 use std::path::Path;
 
-pub fn create_memorystrip(len: i32) -> Vec<i32> {
-    let mut mem: Vec<i32> = Vec::new();
-    for _i in 0..len {
-        mem.push(0);
-    }
-    return mem;
-}
-
 // Returns an Iterator to the Reader of the lines of the file. The output is
 // wrapped in a Result to allow error matching.
 pub fn read_lines<P>(filename: P) -> io::Result<Lines<BufReader<File>>>
@@ -24,22 +16,33 @@ where
 
 pub fn store_input(filename: &String) -> Vec<Vec<String>> {
     let mut tokens: Vec<Vec<String>> = Vec::new();
+
     let lines: Lines<BufReader<File>> =
         read_lines(filename).expect("Error in reading file!");
+
     let mut linenum = 0;
     for l in lines {
+        linenum += 1;
+
         let line = match l {
             Ok(x) => x,
             Err(error) => {
-                panic!("Error in reading line {}: {}!", linenum + 1, error);
+                panic!("Error in reading line {}: {}!", linenum, error);
             }
         };
-        linenum += 1;
-        let s1 = line.replace(";", "");
-        let s2 = s1.trim();
+        
+        // let s1 = line.replace(";", "");
+        let mut s2 = line.trim().to_string();
         if s2.len() > 0 {
             // One word detected.
+            let last_char = s2.chars().nth(line.chars().count() - 1).unwrap();
+            if last_char != ';' {
+                panic!("Line number {}: Missing ;", linenum);
+            }
+
+            s2 = s2.replace(";", "");
             let s2_iter = s2.split(",");
+
             for s in s2_iter {
                 let word = s.trim().to_string();
                 if word.len() == 0 {
@@ -51,10 +54,12 @@ pub fn store_input(filename: &String) -> Vec<Vec<String>> {
                 tokens.push(Vec::new());
                 tokens[linenum - 1].push(word);
             }
+
             if tokens[linenum - 1].len() != 3 {
                 panic!("Incorrect number of parameters in line {}", linenum);
             }
-        } else {
+        } 
+        else {
             panic!("Incorrect number of parameters in line {}", linenum);
         }
     }
@@ -109,11 +114,13 @@ pub fn create_map() -> HashMap<String, i32> {
 pub fn build_graph(
     tokens: &Vec<Vec<String>>,
     locations: &HashMap<String, i32>,
-) -> HashMap<i32, HashMap<i32, i32>> {
+) -> HashMap<i32, HashMap<i32, i32>> 
+{
     let mut graph: HashMap<i32, HashMap<i32, i32>> = HashMap::new();
     for i in 0..locations.len() {
         graph.insert(i.try_into().unwrap(), HashMap::new());
     }
+    
     let length = tokens.len() / 3;
     for linenum in 0..length {
         let loc1 = match locations.get(&tokens[linenum][0]) {
