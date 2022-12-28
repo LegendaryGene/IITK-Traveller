@@ -109,6 +109,10 @@ pub fn create_map() -> HashMap<String, i32> {
         ("kd_1".to_string(), 36),
         ("kd_2".to_string(), 37),
         ("kd_3".to_string(), 38),
+        ("eshop_1".to_string(), 39),
+        ("eshop_2".to_string(), 40),
+        ("doaa_1".to_string(), 41),
+        ("doaa_2".to_string(), 42),
     ]);
     return locations;
 }
