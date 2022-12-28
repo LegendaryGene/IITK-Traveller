@@ -1,6 +1,6 @@
 # IITK - Traveller
 
-IITK - Traveller is an esoteric language designed by Programming Club,IIT Kanpur. Started as a fun winter project, the construct of the language is partailly inspired by esolangs 3var and Taxi, and its major goal is to introduce IITK peeps to esolangs and provide them with a relatable, challenging and creative construct, in case they have been bored using the similar language constructs like C/C++,Java,Python etc.
+IITK - Traveller is an esoteric language designed by Programming Club,IIT Kanpur. Started as a fun winter project, the construct of the language is partially inspired by esolangs 3var and Taxi, and its major goal is to introduce IITK peeps to esolangs and provide them with a relatable, challenging and creative construct, in case they have been bored using the similar language constructs like C/C++,Java,Python etc.
 
 ## Theme
 
@@ -9,13 +9,13 @@ A traveller, with the help of 4 boxes + book in his/her bag, wishes to travel II
 ## Language Overview
 
 The book represents a memory tape which is an integer array(namely mem[]), of length 2048. The first three boxes represent 3 variables(namely mem_1, mem_2, and mem_3), which represent the indices of the array specified above. The last of the boxes represents a condition variable(namely cond), which can intake any integer value. The IITK landmarks will represent the supported commands.
-As per the language construct, the user needs to travel from one landmark to the other depending on the current value of condition variable. 
+As per the language construct, the user needs to travel from one landmark to the other depending on the current value of condition variable.
 
 ## Language Specifications
 
-The construct of the language works in the manner that you visit various landmarks denoting different operations. Each statement of the langauge is described visually as: <br/><br/>
+The construct of the language works in the manner that you visit various landmarks denoting different operations. Each statement of the language is described visually as: <br/><br/>
 <div align = "center"><img src= "./images/Readme_Image.jpeg" style= "height:500 px; width:500px"/><br/><br/></div>
-Therefore, one can think of a program as initialising a graph of operations by carefully manipulating the given variables(especialy the condition variable) and deciding the landmarks and their linkages such that finally the task is accomplished. (<em>ESC201 Flashbacks Intensify</em>)
+Therefore, one can think of a program as initialising a graph of operations by carefully manipulating the given variables(especially the condition variable) and deciding the landmarks and their linkages such that finally the task is accomplished. (<em>ESC201 Flashbacks Intensify</em>)
 
 ## Initializations
 
