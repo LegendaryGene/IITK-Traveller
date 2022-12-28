@@ -1,8 +1,9 @@
-use core::panic;
+// use core::panic;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader, Lines};
 use std::path::Path;
+use std::convert::TryInto;
 
 // Returns an Iterator to the Reader of the lines of the file. The output is
 // wrapped in a Result to allow error matching.
@@ -120,7 +121,7 @@ pub fn build_graph(
     for i in 0..locations.len() {
         graph.insert(i.try_into().unwrap(), HashMap::new());
     }
-    
+
     let length = tokens.len() / 3;
     for linenum in 0..length {
         let loc1 = match locations.get(&tokens[linenum][0]) {

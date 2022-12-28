@@ -1,3 +1,4 @@
+// use core::panic;
 use std::collections::HashMap;
 use std::io::{self};
 
@@ -112,6 +113,9 @@ impl TravelStat {
                     self.mem1 += 1;
                     if self.mem1 == 2048 {
                         self.mem1_lvl += 1;
+                        if mem.len() <= self.mem1_lvl {
+                            mem.push(vec![0;2048]);
+                        }
                         self.mem1 = 0;
                     }
                 },
@@ -119,6 +123,9 @@ impl TravelStat {
                     self.mem2 += 1;
                     if self.mem2 == 2048 {
                         self.mem2_lvl += 1;
+                        if mem.len() <= self.mem1_lvl {
+                            mem.push(vec![0;2048]);
+                        }
                         self.mem2 = 0;
                     }
                 },
@@ -126,6 +133,9 @@ impl TravelStat {
                     self.mem3 += 1;
                     if self.mem3 == 2048 {
                         self.mem3_lvl += 1;
+                        if mem.len() <= self.mem1_lvl {
+                            mem.push(vec![0;2048]);
+                        }
                         self.mem3 = 0;
                     }
                 },
@@ -133,15 +143,33 @@ impl TravelStat {
                     if self.mem1 != 0 {
                         self.mem1 -= 1;
                     }
+                    else {
+                        if self.mem1_lvl != 0 {
+                            self.mem1 = 2047;
+                            self.mem1_lvl -= 1;
+                        }
+                    }
                 },      
             37 => {                    // "kd_2"
                     if self.mem2 != 0 {
                         self.mem2 -= 1;
                     }
+                    else {
+                        if self.mem2_lvl != 0 {
+                            self.mem2 = 2047;
+                            self.mem2_lvl -= 1;
+                        }
+                    }
                 },      
             38 => {                    // "kd_3"
                     if self.mem3 != 0 {
                         self.mem3 -= 1;      
+                    }
+                    else {
+                        if self.mem3_lvl != 0 {
+                            self.mem3 = 2047;
+                            self.mem3_lvl -= 1;
+                        }
                     }
                 },
             _ => panic!("No such operation exists!"),

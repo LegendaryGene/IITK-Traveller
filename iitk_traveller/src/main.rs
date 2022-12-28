@@ -1,7 +1,7 @@
 mod lexer;
 mod traveller;
 
-use core::panic;
+// use core::panic;
 use std::env;
 
 fn main() {
