@@ -34,16 +34,9 @@ pub fn store_input(filename: &String) -> (Vec<Vec<String>>, usize) {
             tokens.push(Vec::new());
             continue;
         }
-        // let s1 = line.replace(";", "");
-        let mut s2 = line.trim().to_string();
+        let s2 = line.trim().to_string();
         if s2.len() > 0 {
             // One word detected.
-            let last_char = s2.chars().nth(line.chars().count() - 1).unwrap();
-            if last_char != ';' {
-                panic!("Line number {}: Missing ;", linenum);
-            }
-
-            s2 = s2.replace(";", "");
             let s2_iter = s2.split(",");
 
             for s in s2_iter {
