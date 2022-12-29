@@ -65,19 +65,32 @@ impl TravelStat {
                     Err(_) => panic!("Invalid Input!"),
                 };
             }
-            4 => mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1] + mem[self.mem2_lvl][self.mem2], // "hall_2"
-            5 => mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1] * mem[self.mem2_lvl][self.mem2], // "hall_3"
-            6 => mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1] - mem[self.mem2_lvl][self.mem2], // "hall_5"
-            7 => mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1] / mem[self.mem2_lvl][self.mem2], // "hall_12"
-            8 => mem[self.mem1_lvl][self.mem1] = mem[self.mem3_lvl][self.mem3],                  // "mt_1_3"
-            9 => mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1],                  // "mt_3_1"
-            10 => mem[self.mem2_lvl][self.mem2] = mem[self.mem3_lvl][self.mem3],                 // "mt_2_3"
-            11 => mem[self.mem3_lvl][self.mem3] = mem[self.mem2_lvl][self.mem2],                 // "mt_3_2"
+            4 => {
+                mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
+                    + mem[self.mem2_lvl][self.mem2]
+            } // "hall_2"
+            5 => {
+                mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
+                    * mem[self.mem2_lvl][self.mem2]
+            } // "hall_3"
+            6 => {
+                mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
+                    - mem[self.mem2_lvl][self.mem2]
+            } // "hall_5"
+            7 => {
+                mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
+                    / mem[self.mem2_lvl][self.mem2]
+            } // "hall_12"
+            8 => mem[self.mem1_lvl][self.mem1] = mem[self.mem3_lvl][self.mem3], // "mt_1_3"
+            9 => mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1], // "mt_3_1"
+            10 => mem[self.mem2_lvl][self.mem2] = mem[self.mem3_lvl][self.mem3], // "mt_2_3"
+            11 => mem[self.mem3_lvl][self.mem3] = mem[self.mem2_lvl][self.mem2], // "mt_3_2"
             12 => println!("{}", mem[self.mem1_lvl][self.mem1]), // "iit_gate_out_1"
             13 => println!("{}", mem[self.mem2_lvl][self.mem2]), // "iit_gate_out_2"
             14 => {
                 // "lecture_hall_gt"
-                if mem[self.mem1_lvl][self.mem1] > mem[self.mem2_lvl][self.mem2] {
+                if mem[self.mem1_lvl][self.mem1] > mem[self.mem2_lvl][self.mem2]
+                {
                     self.curr_loc = loc["lecture_hall_gt_t"];
                 } else {
                     self.curr_loc = loc["lecture_hall_gt_f"];
@@ -85,7 +98,8 @@ impl TravelStat {
             }
             17 => {
                 // "lecture_hall_lt"
-                if mem[self.mem1_lvl][self.mem1] < mem[self.mem2_lvl][self.mem2] {
+                if mem[self.mem1_lvl][self.mem1] < mem[self.mem2_lvl][self.mem2]
+                {
                     self.curr_loc = loc["lecture_hall_lt_t"];
                 } else {
                     self.curr_loc = loc["lecture_hall_lt_f"];
@@ -93,7 +107,9 @@ impl TravelStat {
             }
             20 => {
                 // "lecture_hall_eq"
-                if mem[self.mem1_lvl][self.mem1] >= mem[self.mem2_lvl][self.mem2] {
+                if mem[self.mem1_lvl][self.mem1]
+                    >= mem[self.mem2_lvl][self.mem2]
+                {
                     self.curr_loc = loc["lecture_hall_eq_t"];
                 } else {
                     self.curr_loc = loc["lecture_hall_eq_f"];
@@ -110,68 +126,101 @@ impl TravelStat {
             31 => mem[self.mem3_lvl][self.mem3] = 0,  // "hall_13_3"
             32 => self.cond = 0,                      // "hall_13_c"
             33 => {
-                    self.mem1 += 1;
-                    if self.mem1 == 2048 {
-                        self.mem1_lvl += 1;
-                        if mem.len() <= self.mem1_lvl {
-                            mem.push(vec![0;2048]);
-                        }
-                        self.mem1 = 0;
+                // "rm_1"
+                self.mem1 += 1;
+                if self.mem1 == 2048 {
+                    self.mem1_lvl += 1;
+                    if mem.len() <= self.mem1_lvl {
+                        mem.push(vec![0; 2048]);
                     }
-                },
+                    self.mem1 = 0;
+                }
+            }
             34 => {
-                    self.mem2 += 1;
-                    if self.mem2 == 2048 {
-                        self.mem2_lvl += 1;
-                        if mem.len() <= self.mem1_lvl {
-                            mem.push(vec![0;2048]);
-                        }
-                        self.mem2 = 0;
+                // "rm_2"
+                self.mem2 += 1;
+                if self.mem2 == 2048 {
+                    self.mem2_lvl += 1;
+                    if mem.len() <= self.mem1_lvl {
+                        mem.push(vec![0; 2048]);
                     }
-                },
+                    self.mem2 = 0;
+                }
+            }
             35 => {
-                    self.mem3 += 1;
-                    if self.mem3 == 2048 {
-                        self.mem3_lvl += 1;
-                        if mem.len() <= self.mem1_lvl {
-                            mem.push(vec![0;2048]);
-                        }
-                        self.mem3 = 0;
+                // "rm_3"
+                self.mem3 += 1;
+                if self.mem3 == 2048 {
+                    self.mem3_lvl += 1;
+                    if mem.len() <= self.mem1_lvl {
+                        mem.push(vec![0; 2048]);
                     }
-                },
-            36 => {                    // "kd_1"
-                    if self.mem1 != 0 {
-                        self.mem1 -= 1;
+                    self.mem3 = 0;
+                }
+            }
+            36 => {
+                // "kd_1"
+                if self.mem1 != 0 {
+                    self.mem1 -= 1;
+                } else {
+                    if self.mem1_lvl != 0 {
+                        self.mem1 = 2047;
+                        self.mem1_lvl -= 1;
                     }
-                    else {
-                        if self.mem1_lvl != 0 {
-                            self.mem1 = 2047;
-                            self.mem1_lvl -= 1;
-                        }
+                }
+            }
+            37 => {
+                // "kd_2"
+                if self.mem2 != 0 {
+                    self.mem2 -= 1;
+                } else {
+                    if self.mem2_lvl != 0 {
+                        self.mem2 = 2047;
+                        self.mem2_lvl -= 1;
                     }
-                },      
-            37 => {                    // "kd_2"
-                    if self.mem2 != 0 {
-                        self.mem2 -= 1;
+                }
+            }
+            38 => {
+                // "kd_3"
+                if self.mem3 != 0 {
+                    self.mem3 -= 1;
+                } else {
+                    if self.mem3_lvl != 0 {
+                        self.mem3 = 2047;
+                        self.mem3_lvl -= 1;
                     }
-                    else {
-                        if self.mem2_lvl != 0 {
-                            self.mem2 = 2047;
-                            self.mem2_lvl -= 1;
-                        }
-                    }
-                },      
-            38 => {                    // "kd_3"
-                    if self.mem3 != 0 {
-                        self.mem3 -= 1;      
-                    }
-                    else {
-                        if self.mem3_lvl != 0 {
-                            self.mem3 = 2047;
-                            self.mem3_lvl -= 1;
-                        }
-                    }
-                },
+                }
+            }
+            39 => {
+                mem[self.mem1_lvl][self.mem1] *= mem[self.mem1_lvl][self.mem1]
+            } // "eshop_1"
+            40 => {
+                mem[self.mem2_lvl][self.mem2] *= mem[self.mem2_lvl][self.mem2]
+            } // "eshop_2"
+            41 => {
+                // "doaa_1"
+                let test: u32 = match mem[self.mem1_lvl][self.mem1].try_into() {
+                    Ok(c) => c,
+                    Err(_) => panic!("No equivalent character for the code!"),
+                };
+                let ch = match char::from_u32(test) {
+                    Some(c) => c,
+                    None => panic!("Cannot convert into character!"),
+                };
+                print!("{}", ch);
+            }
+            42 => {
+                // "doaa_2"
+                let test: u32 = match mem[self.mem2_lvl][self.mem2].try_into() {
+                    Ok(c) => c,
+                    Err(_) => panic!("No equivalent character for the code!"),
+                };
+                let ch = match char::from_u32(test) {
+                    Some(c) => c,
+                    None => panic!("Cannot convert into character!"),
+                };
+                print!("{}", ch);
+            }
             _ => panic!("No such operation exists!"),
         }
     }

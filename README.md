@@ -14,7 +14,7 @@ As per the language construct, the user needs to travel from one landmark to the
 ## Language Specifications
 
 The construct of the language works in the manner that you visit various landmarks denoting different operations. Each statement of the language is described visually as: <br/><br/>
-<div align = "center"><img src= "./images/Readme_Image.jpeg" style= "height:500 px; width:500px"/><br/><br/></div>
+<div align = "center"><img src= "./images/Readme_Image.png" style= "height:500 px; width:500px"/><br/><br/></div>
 Therefore, one can think of a program as initialising a graph of operations by carefully manipulating the given variables(especially the condition variable) and deciding the landmarks and their linkages such that finally the task is accomplished. (<em>ESC201 Flashbacks Intensify</em>)
 
 ## Initializations

@@ -1,9 +1,8 @@
-// use core::panic;
 use std::collections::HashMap;
+use std::convert::TryInto;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader, Lines};
 use std::path::Path;
-use std::convert::TryInto;
 
 // Returns an Iterator to the Reader of the lines of the file. The output is
 // wrapped in a Result to allow error matching.
@@ -15,7 +14,7 @@ where
     Ok(BufReader::new(file).lines())
 }
 
-pub fn store_input(filename: &String) -> Vec<Vec<String>> {
+pub fn store_input(filename: &String) -> (Vec<Vec<String>>, usize) {
     let mut tokens: Vec<Vec<String>> = Vec::new();
 
     let lines: Lines<BufReader<File>> =
@@ -24,24 +23,20 @@ pub fn store_input(filename: &String) -> Vec<Vec<String>> {
     let mut linenum = 0;
     for l in lines {
         linenum += 1;
-
         let line = match l {
             Ok(x) => x,
             Err(error) => {
                 panic!("Error in reading line {}: {}!", linenum, error);
             }
         };
-        
-        // let s1 = line.replace(";", "");
-        let mut s2 = line.trim().to_string();
+        if line.len() == 0 {
+            // To ignore empty lines.
+            tokens.push(Vec::new());
+            continue;
+        }
+        let s2 = line.trim().to_string();
         if s2.len() > 0 {
             // One word detected.
-            let last_char = s2.chars().nth(line.chars().count() - 1).unwrap();
-            if last_char != ';' {
-                panic!("Line number {}: Missing ;", linenum);
-            }
-
-            s2 = s2.replace(";", "");
             let s2_iter = s2.split(",");
 
             for s in s2_iter {
@@ -59,12 +54,11 @@ pub fn store_input(filename: &String) -> Vec<Vec<String>> {
             if tokens[linenum - 1].len() != 3 {
                 panic!("Incorrect number of parameters in line {}", linenum);
             }
-        } 
-        else {
+        } else {
             panic!("Incorrect number of parameters in line {}", linenum);
         }
     }
-    return tokens;
+    return (tokens, linenum);
 }
 
 pub fn create_map() -> HashMap<String, i32> {
@@ -108,6 +102,10 @@ pub fn create_map() -> HashMap<String, i32> {
         ("kd_1".to_string(), 36),
         ("kd_2".to_string(), 37),
         ("kd_3".to_string(), 38),
+        ("eshop_1".to_string(), 39),
+        ("eshop_2".to_string(), 40),
+        ("doaa_1".to_string(), 41),
+        ("doaa_2".to_string(), 42),
     ]);
     return locations;
 }
@@ -115,15 +113,17 @@ pub fn create_map() -> HashMap<String, i32> {
 pub fn build_graph(
     tokens: &Vec<Vec<String>>,
     locations: &HashMap<String, i32>,
-) -> HashMap<i32, HashMap<i32, i32>> 
-{
+    lines: usize,
+) -> HashMap<i32, HashMap<i32, i32>> {
     let mut graph: HashMap<i32, HashMap<i32, i32>> = HashMap::new();
     for i in 0..locations.len() {
         graph.insert(i.try_into().unwrap(), HashMap::new());
     }
 
-    let length = tokens.len() / 3;
-    for linenum in 0..length {
+    for linenum in 0..lines {
+        if tokens[linenum].is_empty() {
+            continue;
+        }
         let loc1 = match locations.get(&tokens[linenum][0]) {
             Some(l) => l,
             None => panic!(

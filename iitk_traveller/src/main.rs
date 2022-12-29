@@ -1,7 +1,6 @@
 mod lexer;
 mod traveller;
 
-// use core::panic;
 use std::env;
 
 fn main() {
@@ -12,9 +11,9 @@ fn main() {
     };
 
     let mut mem = vec![vec![0; 2048]];
-    let tokens = lexer::store_input(filename);
+    let (tokens, lines) = lexer::store_input(filename);
     let locations = lexer::create_map();
-    let graph = lexer::build_graph(&tokens, &locations);
+    let graph = lexer::build_graph(&tokens, &locations, lines);
     let mut traveller = traveller::TravelStat::new(0, 0, 1, 0, 2, 0, 0, 0);
 
     traveller.travel(&mut mem, &locations, &graph);
