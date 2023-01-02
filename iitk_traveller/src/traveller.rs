@@ -1,6 +1,5 @@
-// use core::panic;
 use std::collections::HashMap;
-use std::io::{self};
+use text_io::read;
 
 pub struct TravelStat {
     mem1: usize,
@@ -42,28 +41,15 @@ impl TravelStat {
         mem: &mut Vec<Vec<i32>>,
         loc: &HashMap<String, i32>,
     ) {
-        let mut inp = "".to_string();
 
         match operation {
             2 => {
-                // "iit_gate_in_1"
-                io::stdin()
-                    .read_line(&mut inp)
-                    .expect("Failed to read line");
-                mem[self.mem1_lvl][self.mem1] = match inp.trim().parse() {
-                    Ok(num) => num,
-                    Err(_) => panic!("Invalid Input!"),
-                };
+                let i: i32 = read!();
+                mem[self.mem1_lvl][self.mem1] = i;
             }
             3 => {
-                // "iit_gate_in_2"
-                io::stdin()
-                    .read_line(&mut inp)
-                    .expect("Failed to read line");
-                mem[self.mem2_lvl][self.mem2] = match inp.trim().parse() {
-                    Ok(num) => num,
-                    Err(_) => panic!("Invalid Input!"),
-                };
+                let i:i32 = read!();
+                mem[self.mem2_lvl][self.mem2] = i;
             }
             4 => {
                 mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
