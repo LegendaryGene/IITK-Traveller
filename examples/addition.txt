@@ -1,6 +1,0 @@
-start, 0, iit_gate_in_1
-iit_gate_in_1, 0 , iit_gate_in_2
-iit_gate_in_2, 0, hall_2
-hall_2, 0, mt_1_3
-mt_1_3, 0 , iit_gate_out_1
-iit_gate_out_1, 0, finish
