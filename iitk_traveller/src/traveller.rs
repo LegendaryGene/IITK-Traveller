@@ -1,6 +1,6 @@
 use std::collections::HashMap;
-use text_io::read;
 use std::io::{self};
+use text_io::read;
 
 pub struct TravelStat {
     mem1: usize,
@@ -43,7 +43,6 @@ impl TravelStat {
         mem_flag: &mut Vec<Vec<i8>>,
         loc: &HashMap<String, i32>,
     ) {
-
         let mut inp = "".to_string();
 
         match operation {
@@ -58,9 +57,10 @@ impl TravelStat {
                 mem_flag[self.mem2_lvl][self.mem2] = 0;
             }
 
-
             4 => {
-                if mem_flag[self.mem1_lvl][self.mem1] == 1 || mem_flag[self.mem2_lvl][self.mem2] == 1{
+                if mem_flag[self.mem1_lvl][self.mem1] == 1
+                    || mem_flag[self.mem2_lvl][self.mem2] == 1
+                {
                     panic!("hall_2 operation is not allowed for EOS literal");
                 }
                 mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
@@ -68,7 +68,9 @@ impl TravelStat {
                 mem_flag[self.mem3_lvl][self.mem3] = 0;
             } // "hall_2"
             5 => {
-                if mem_flag[self.mem1_lvl][self.mem1] == 1 || mem_flag[self.mem2_lvl][self.mem2] == 1{
+                if mem_flag[self.mem1_lvl][self.mem1] == 1
+                    || mem_flag[self.mem2_lvl][self.mem2] == 1
+                {
                     panic!("hall_3 operation is not allowed for EOS literal");
                 }
                 mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
@@ -76,7 +78,9 @@ impl TravelStat {
                 mem_flag[self.mem3_lvl][self.mem3] = 0;
             } // "hall_3"
             6 => {
-                if mem_flag[self.mem1_lvl][self.mem1] == 1 || mem_flag[self.mem2_lvl][self.mem2] == 1{
+                if mem_flag[self.mem1_lvl][self.mem1] == 1
+                    || mem_flag[self.mem2_lvl][self.mem2] == 1
+                {
                     panic!("hall_5 operation is not allowed for EOS literal");
                 }
                 mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
@@ -84,7 +88,9 @@ impl TravelStat {
                 mem_flag[self.mem3_lvl][self.mem3] = 0;
             } // "hall_5"
             7 => {
-                if mem_flag[self.mem1_lvl][self.mem1] == 1 || mem_flag[self.mem2_lvl][self.mem2] == 1{
+                if mem_flag[self.mem1_lvl][self.mem1] == 1
+                    || mem_flag[self.mem2_lvl][self.mem2] == 1
+                {
                     panic!("hall_12 operation is not allowed for EOS literal");
                 }
                 mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
@@ -92,32 +98,35 @@ impl TravelStat {
                 mem_flag[self.mem3_lvl][self.mem3] = 0;
             } // "hall_12"
 
-
             8 => {
                 mem[self.mem1_lvl][self.mem1] = mem[self.mem3_lvl][self.mem3];
-                mem_flag[self.mem1_lvl][self.mem1] = mem_flag[self.mem3_lvl][self.mem3]
-            }, // "mt_1_3"
+                mem_flag[self.mem1_lvl][self.mem1] =
+                    mem_flag[self.mem3_lvl][self.mem3]
+            } // "mt_1_3"
             9 => {
                 mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1];
-                mem_flag[self.mem3_lvl][self.mem3] = mem_flag[self.mem1_lvl][self.mem1];
-            }, // "mt_3_1"
+                mem_flag[self.mem3_lvl][self.mem3] =
+                    mem_flag[self.mem1_lvl][self.mem1];
+            } // "mt_3_1"
             10 => {
                 mem[self.mem2_lvl][self.mem2] = mem[self.mem3_lvl][self.mem3];
-                mem_flag[self.mem2_lvl][self.mem2] = mem_flag[self.mem3_lvl][self.mem3];
-            }, // "mt_2_3"
+                mem_flag[self.mem2_lvl][self.mem2] =
+                    mem_flag[self.mem3_lvl][self.mem3];
+            } // "mt_2_3"
             11 => {
                 mem[self.mem3_lvl][self.mem3] = mem[self.mem2_lvl][self.mem2];
-                mem_flag[self.mem3_lvl][self.mem3] = mem_flag[self.mem2_lvl][self.mem2];
-            }, // "mt_3_2"
-
+                mem_flag[self.mem3_lvl][self.mem3] =
+                    mem_flag[self.mem2_lvl][self.mem2];
+            } // "mt_3_2"
 
             12 => println!("{}", mem[self.mem1_lvl][self.mem1]), // "iit_gate_out_1"
             13 => println!("{}", mem[self.mem2_lvl][self.mem2]), // "iit_gate_out_2"
 
-            
             14 => {
                 // "lecture_hall_gt"
-                if mem_flag[self.mem1_lvl][self.mem1] == 1 || mem_flag[self.mem2_lvl][self.mem2] == 1{
+                if mem_flag[self.mem1_lvl][self.mem1] == 1
+                    || mem_flag[self.mem2_lvl][self.mem2] == 1
+                {
                     panic!("lecture_hall_gt operation is not allowed for EOS literal");
                 }
                 if mem[self.mem1_lvl][self.mem1] > mem[self.mem2_lvl][self.mem2]
@@ -129,7 +138,9 @@ impl TravelStat {
             }
             17 => {
                 // "lecture_hall_lt"
-                if mem_flag[self.mem1_lvl][self.mem1] == 1 || mem_flag[self.mem2_lvl][self.mem2] == 1{
+                if mem_flag[self.mem1_lvl][self.mem1] == 1
+                    || mem_flag[self.mem2_lvl][self.mem2] == 1
+                {
                     panic!("lecture_hall_lt operation is not allowed for EOS literal");
                 }
                 if mem[self.mem1_lvl][self.mem1] < mem[self.mem2_lvl][self.mem2]
@@ -141,11 +152,15 @@ impl TravelStat {
             }
             20 => {
                 // "lecture_hall_eq"
-                if mem_flag[self.mem1_lvl][self.mem1] == 1 || mem_flag[self.mem2_lvl][self.mem2] == 1{
+                if mem_flag[self.mem1_lvl][self.mem1] == 1
+                    || mem_flag[self.mem2_lvl][self.mem2] == 1
+                {
                     panic!("lecture_hall_eq operation is not allowed for EOS literal");
                 }
-                if mem[self.mem1_lvl][self.mem1] == mem[self.mem2_lvl][self.mem2] 
-                    && mem_flag[self.mem1_lvl][self.mem1] == mem_flag[self.mem2_lvl][self.mem2]
+                if mem[self.mem1_lvl][self.mem1]
+                    == mem[self.mem2_lvl][self.mem2]
+                    && mem_flag[self.mem1_lvl][self.mem1]
+                        == mem_flag[self.mem2_lvl][self.mem2]
                 {
                     self.curr_loc = loc["lecture_hall_eq_t"];
                 } else {
@@ -153,82 +168,97 @@ impl TravelStat {
                 }
             }
 
-            23 => {                                   // "oat_stairs_1"
+            23 => {
+                // "oat_stairs_1"
                 if mem_flag[self.mem1_lvl][self.mem1] == 1 {
-                    panic!("oat_stairs_1 operation is not allowed for EOS literal");
+                    panic!(
+                        "oat_stairs_1 operation is not allowed for EOS literal"
+                    );
                 }
                 mem[self.mem1_lvl][self.mem1] += 1;
-            }         
-            24 => {                                   // "oat_stairs_2"
+            }
+            24 => {
+                // "oat_stairs_2"
                 if mem_flag[self.mem2_lvl][self.mem2] == 1 {
-                    panic!("oat_stairs_2 operation is not allowed for EOS literal");
+                    panic!(
+                        "oat_stairs_2 operation is not allowed for EOS literal"
+                    );
                 }
                 mem[self.mem2_lvl][self.mem2] += 1;
-            } 
-            25 => self.cond += 1,                     // "oat_stairs_c"
-            26 => {                                   // "southern_labs_1"
+            }
+            25 => self.cond += 1, // "oat_stairs_c"
+            26 => {
+                // "southern_labs_1"
                 if mem_flag[self.mem1_lvl][self.mem1] == 1 {
                     panic!("southern_labs_1 operation is not allowed for EOS literal");
                 }
                 mem[self.mem1_lvl][self.mem1] -= 1;
-            }         
-            27 => {                                   // "southern_labs_2"
+            }
+            27 => {
+                // "southern_labs_2"
                 if mem_flag[self.mem2_lvl][self.mem2] == 1 {
                     panic!("southern_labs_2 operation is not allowed for EOS literal");
                 }
                 mem[self.mem2_lvl][self.mem2] -= 1;
             }
-            28 => self.cond -= 1,                     // "southern_labs_c"
+            28 => self.cond -= 1, // "southern_labs_c"
 
-            29 => {                                   // "hall_13_1"
-                mem[self.mem1_lvl][self.mem1] = 0; 
+            29 => {
+                // "hall_13_1"
+                mem[self.mem1_lvl][self.mem1] = 0;
                 mem_flag[self.mem1_lvl][self.mem1] = 0;
-            },
-            30 => {                                   // "hall_13_2"
+            }
+            30 => {
+                // "hall_13_2"
                 mem[self.mem2_lvl][self.mem2] = 0;
                 mem_flag[self.mem2_lvl][self.mem2] = 0;
-            },    
-            31 => {                                   // "hall_13_3"
+            }
+            31 => {
+                // "hall_13_3"
                 mem[self.mem3_lvl][self.mem3] = 0;
                 mem_flag[self.mem3_lvl][self.mem3] = 0;
-            },  
-            32 => self.cond = 0,                      // "hall_13_c"
+            }
+            32 => self.cond = 0, // "hall_13_c"
 
-            33 => {                                   // "rm_1"
+            33 => {
+                // "rm_1"
                 self.mem1 += 1;
                 if self.mem1 == 2048 {
                     self.mem1_lvl += 1;
                     if mem.len() <= self.mem1_lvl {
                         mem.push(vec![0; 2048]);
-                        mem_flag.push(vec![0;2048]);
+                        mem_flag.push(vec![0; 2048]);
                     }
                     self.mem1 = 0;
                 }
             }
-            34 => {                                   // "rm_2"
+            34 => {
+                // "rm_2"
                 self.mem2 += 1;
                 if self.mem2 == 2048 {
                     self.mem2_lvl += 1;
                     if mem.len() <= self.mem3_lvl {
                         mem.push(vec![0; 2048]);
-                        mem_flag.push(vec![0;2048]);
+                        mem_flag.push(vec![0; 2048]);
                     }
                     self.mem2 = 0;
                 }
             }
-            35 => {                                   // "rm_3"
+            35 => {
+                // "rm_3"
                 self.mem3 += 1;
                 if self.mem3 == 2048 {
-                    self.mem3_lvl += 1; 
+                    self.mem3_lvl += 1;
                     if mem.len() <= self.mem3_lvl {
                         mem.push(vec![0; 2048]);
-                        mem_flag.push(vec![0;2048]);
+                        mem_flag.push(vec![0; 2048]);
                     }
                     self.mem3 = 0;
                 }
             }
 
-            36 => {                                   // "kd_1"
+            36 => {
+                // "kd_1"
                 if self.mem1 != 0 {
                     self.mem1 -= 1;
                 } else {
@@ -238,7 +268,8 @@ impl TravelStat {
                     }
                 }
             }
-            37 => {                                   // "kd_2"
+            37 => {
+                // "kd_2"
                 if self.mem2 != 0 {
                     self.mem2 -= 1;
                 } else {
@@ -248,7 +279,8 @@ impl TravelStat {
                     }
                 }
             }
-            38 => {                                   // "kd_3"
+            38 => {
+                // "kd_3"
                 if self.mem3 != 0 {
                     self.mem3 -= 1;
                 } else {
@@ -259,20 +291,23 @@ impl TravelStat {
                 }
             }
 
-            39 => {                                   // "eshop_1"
+            39 => {
+                // "eshop_1"
                 if mem_flag[self.mem1_lvl][self.mem1] == 1 {
                     panic!("Eshop1 operation not allowed for EOS literals");
                 }
                 mem[self.mem1_lvl][self.mem1] *= mem[self.mem1_lvl][self.mem1]
-            } 
-            40 => {                                   // "eshop_2"
+            }
+            40 => {
+                // "eshop_2"
                 if mem_flag[self.mem2_lvl][self.mem2] == 1 {
                     panic!("Eshop2 operation not allowed for EOS literals");
                 }
                 mem[self.mem2_lvl][self.mem2] *= mem[self.mem2_lvl][self.mem2]
-            } 
+            }
 
-            41 => {                                   // "doaa_1"
+            41 => {
+                // "doaa_1"
                 let test: u32 = match mem[self.mem1_lvl][self.mem1].try_into() {
                     Ok(c) => c,
                     Err(_) => panic!("No equivalent character for the code!"),
@@ -283,7 +318,8 @@ impl TravelStat {
                 };
                 println!("{}", ch);
             }
-            42 => {                                   // "doaa_2"
+            42 => {
+                // "doaa_2"
                 let test: u32 = match mem[self.mem2_lvl][self.mem2].try_into() {
                     Ok(c) => c,
                     Err(_) => panic!("No equivalent character for the code!"),
@@ -295,7 +331,8 @@ impl TravelStat {
                 println!("{}", ch);
             }
 
-            43 => {                                   // "airstrip_land_1"
+            43 => {
+                // "airstrip_land_1"
                 io::stdin()
                     .read_line(&mut inp)
                     .expect("Failed to read line");
@@ -318,10 +355,10 @@ impl TravelStat {
                 }
 
                 mem_flag[ptr_lvl][ptr_pos] = 1;
-                
             }
 
-            44 => {                                   // "airstrip_land_2"
+            44 => {
+                // "airstrip_land_2"
                 io::stdin()
                     .read_line(&mut inp)
                     .expect("Failed to read line");
@@ -344,15 +381,16 @@ impl TravelStat {
                 }
 
                 mem_flag[ptr_lvl][ptr_pos] = 1;
-                
             }
 
-            45 => {                                   // "airstrip_takeoff_1"
+            45 => {
+                // "airstrip_takeoff_1"
                 let mut ptr_pos = self.mem1;
                 let mut ptr_lvl = self.mem1_lvl;
 
                 while mem_flag[ptr_lvl][ptr_pos] != 1 {
-                    let ch = match char::from_u32(mem[ptr_lvl][ptr_pos] as u32) {
+                    let ch = match char::from_u32(mem[ptr_lvl][ptr_pos] as u32)
+                    {
                         Some(c) => c,
                         None => panic!("Cannot convert into character!"),
                     };
@@ -369,12 +407,14 @@ impl TravelStat {
                 println!();
             }
 
-            46 => {                                   // "airstrip_takeoff_2"
+            46 => {
+                // "airstrip_takeoff_2"
                 let mut ptr_pos = self.mem2;
                 let mut ptr_lvl = self.mem2_lvl;
 
                 while mem_flag[ptr_lvl][ptr_pos] != 1 {
-                    let ch = match char::from_u32(mem[ptr_lvl][ptr_pos] as u32) {
+                    let ch = match char::from_u32(mem[ptr_lvl][ptr_pos] as u32)
+                    {
                         Some(c) => c,
                         None => panic!("Cannot convert into character!"),
                     };
@@ -390,29 +430,30 @@ impl TravelStat {
 
                 println!();
             }
-
-            47 => {                                   // "pronite_1"
+            47 => {
+                // "pronite_1"
                 mem[self.mem1_lvl][self.mem1] = 0;
                 mem_flag[self.mem1_lvl][self.mem1] = 1
             }
-            48 => {                                   // "pronite_2"
+            48 => {
+                // "pronite_2"
                 mem_flag[self.mem2_lvl][self.mem2] = 1;
                 mem[self.mem2_lvl][self.mem2] = 0;
             }
 
-            49 => {                                   // "events_1"
+            49 => {
+                // "events_1"
                 if mem_flag[self.mem1_lvl][self.mem1] == 1 {
                     self.curr_loc = loc["events_1_t"];
-                }
-                else {
+                } else {
                     self.curr_loc = loc["events_1_f"];
                 }
             }
-            52 => {                                   // "events_2"
+            52 => {
+                // "events_2"
                 if mem_flag[self.mem2_lvl][self.mem2] == 1 {
                     self.curr_loc = loc["events_2_t"];
-                }
-                else {
+                } else {
                     self.curr_loc = loc["events_2_f"];
                 }
             }

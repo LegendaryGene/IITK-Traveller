@@ -3,6 +3,7 @@ use std::convert::TryInto;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader, Lines};
 use std::path::Path;
+use substring::Substring;
 
 // Returns an Iterator to the Reader of the lines of the file. The output is
 // wrapped in a Result to allow error matching.
@@ -118,6 +119,7 @@ pub fn create_map() -> HashMap<String, i32> {
         ("events_2".to_string(), 52),
         ("events_2_t".to_string(), 53),
         ("events_2_f".to_string(), 54),
+        ("oat_stage".to_string(), 55),
     ]);
     return locations;
 }
@@ -152,6 +154,23 @@ pub fn build_graph(
                 linenum + 1
             ),
         };
+
+        if tokens[linenum][2].len() > "oat_stage".to_string().len() + 2 {
+            let s = tokens[linenum][2].substring(
+                "oat_stage".to_string().len() + 1,
+                tokens[linenum][2].len() - 1,
+            );
+            let conv = s.to_string().parse();
+            if conv.is_ok() {
+                let i: i32 = conv.unwrap();
+                println!("Found a number: {}", i);
+            };
+            if graph[&loc1].contains_key(&cond_val) {
+                panic!("Graph exists");
+            } else {
+                graph.get_mut(&loc1).map(|val| val.insert(cond_val, "oat_stage"));
+            }
+        }
 
         let loc2 = match locations.get(&tokens[linenum][2]) {
             Some(l) => l,

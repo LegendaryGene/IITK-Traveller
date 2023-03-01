@@ -11,7 +11,7 @@ fn main() {
     };
 
     let mut mem: Vec<Vec<i32>> = vec![vec![0; 2048]];
-    let mut mem_flag: Vec<Vec<i8>> = vec![vec![0;2048]];
+    let mut mem_flag: Vec<Vec<i8>> = vec![vec![0; 2048]];
     let (tokens, lines) = lexer::store_input(filename);
     let locations = lexer::create_map();
     let graph = lexer::build_graph(&tokens, &locations, lines);
