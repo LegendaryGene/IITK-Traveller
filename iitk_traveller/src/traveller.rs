@@ -11,6 +11,7 @@ pub struct TravelStat {
     mem3_lvl: usize,
     cond: i32,
     curr_loc: i32,
+    prev_loc: i32,
 }
 
 impl TravelStat {
@@ -23,6 +24,7 @@ impl TravelStat {
         mem3_lvl: usize,
         cond: i32,
         curr_loc: i32,
+        prev_loc: i32,
     ) -> TravelStat {
         TravelStat {
             mem1,
@@ -33,6 +35,7 @@ impl TravelStat {
             mem3_lvl,
             cond,
             curr_loc,
+            prev_loc,
         }
     }
 
@@ -42,6 +45,7 @@ impl TravelStat {
         mem: &mut Vec<Vec<i32>>,
         mem_flag: &mut Vec<Vec<i8>>,
         loc: &HashMap<String, i32>,
+        increment_graph: &HashMap<(i32, i32), i32>,
     ) {
         let mut inp = "".to_string();
 
@@ -56,7 +60,6 @@ impl TravelStat {
                 mem[self.mem2_lvl][self.mem2] = i;
                 mem_flag[self.mem2_lvl][self.mem2] = 0;
             }
-
             4 => {
                 if mem_flag[self.mem1_lvl][self.mem1] == 1
                     || mem_flag[self.mem2_lvl][self.mem2] == 1
@@ -131,8 +134,10 @@ impl TravelStat {
                 }
                 if mem[self.mem1_lvl][self.mem1] > mem[self.mem2_lvl][self.mem2]
                 {
+                    self.prev_loc = self.curr_loc;
                     self.curr_loc = loc["lecture_hall_gt_t"];
                 } else {
+                    self.prev_loc = self.curr_loc;
                     self.curr_loc = loc["lecture_hall_gt_f"];
                 }
             }
@@ -145,8 +150,10 @@ impl TravelStat {
                 }
                 if mem[self.mem1_lvl][self.mem1] < mem[self.mem2_lvl][self.mem2]
                 {
+                    self.prev_loc = self.curr_loc;
                     self.curr_loc = loc["lecture_hall_lt_t"];
                 } else {
+                    self.prev_loc = self.curr_loc;
                     self.curr_loc = loc["lecture_hall_lt_f"];
                 }
             }
@@ -162,8 +169,10 @@ impl TravelStat {
                     && mem_flag[self.mem1_lvl][self.mem1]
                         == mem_flag[self.mem2_lvl][self.mem2]
                 {
+                    self.prev_loc = self.curr_loc;
                     self.curr_loc = loc["lecture_hall_eq_t"];
                 } else {
+                    self.prev_loc = self.curr_loc;
                     self.curr_loc = loc["lecture_hall_eq_f"];
                 }
             }
@@ -444,17 +453,36 @@ impl TravelStat {
             49 => {
                 // "events_1"
                 if mem_flag[self.mem1_lvl][self.mem1] == 1 {
+                    self.prev_loc = self.curr_loc;
                     self.curr_loc = loc["events_1_t"];
                 } else {
+                    self.prev_loc = self.curr_loc;
                     self.curr_loc = loc["events_1_f"];
                 }
             }
             52 => {
                 // "events_2"
                 if mem_flag[self.mem2_lvl][self.mem2] == 1 {
+                    self.prev_loc = self.curr_loc;
                     self.curr_loc = loc["events_2_t"];
                 } else {
+                    self.prev_loc = self.curr_loc;
                     self.curr_loc = loc["events_2_f"];
+                }
+            }
+            55 => {
+                if increment_graph.contains_key(&(self.prev_loc, self.cond)) {
+                    let change_by: i32 = *(increment_graph
+                        .get(&(self.prev_loc, self.cond))
+                        .unwrap());
+                    // println!("Changing by: {}", change_by);
+                    self.cond += change_by;
+                    // println!("Now the condition has changed to: {}", self.cond);
+                } else {
+                    // panic!(
+                    //     "Key: ({}, {}) not found!",
+                    //     self.prev_loc, self.cond
+                    // );
                 }
             }
             _ => panic!("No such operation exists!"),
@@ -467,20 +495,30 @@ impl TravelStat {
         mem_flag: &mut Vec<Vec<i8>>,
         locations: &HashMap<String, i32>,
         graph: &HashMap<i32, HashMap<i32, i32>>,
+        increment_graph: &HashMap<(i32, i32), i32>,
     ) {
         if self.curr_loc == locations["finish"] {
             return;
         }
 
         if self.curr_loc != locations["start"] {
-            self.perform_operation(self.curr_loc, mem, mem_flag, &locations);
+            self.perform_operation(
+                self.curr_loc,
+                mem,
+                mem_flag,
+                &locations,
+                increment_graph,
+            );
         }
 
         if !graph[&self.curr_loc].contains_key(&self.cond) {
-            panic!("Stuck in landmark number {}", self.curr_loc);
+            panic!(
+                "Stuck in landmark number {} with condition {}",
+                self.curr_loc, self.cond
+            );
         }
-
+        self.prev_loc = self.curr_loc;
         self.curr_loc = graph[&self.curr_loc][&self.cond];
-        return self.travel(mem, mem_flag, locations, graph);
+        return self.travel(mem, mem_flag, locations, graph, increment_graph);
     }
 }

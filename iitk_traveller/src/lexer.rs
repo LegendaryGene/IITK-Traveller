@@ -128,8 +128,9 @@ pub fn build_graph(
     tokens: &Vec<Vec<String>>,
     locations: &HashMap<String, i32>,
     lines: usize,
-) -> HashMap<i32, HashMap<i32, i32>> {
+) -> (HashMap<i32, HashMap<i32, i32>>, HashMap<(i32, i32), i32>) {
     let mut graph: HashMap<i32, HashMap<i32, i32>> = HashMap::new();
+    let mut increment_graph: HashMap<(i32, i32), i32> = HashMap::new();
     for i in 0..locations.len() {
         graph.insert(i.try_into().unwrap(), HashMap::new());
     }
@@ -163,12 +164,18 @@ pub fn build_graph(
             let conv = s.to_string().parse();
             if conv.is_ok() {
                 let i: i32 = conv.unwrap();
-                println!("Found a number: {}", i);
-            };
-            if graph[&loc1].contains_key(&cond_val) {
-                panic!("Graph exists");
-            } else {
-                graph.get_mut(&loc1).map(|val| val.insert(cond_val, "oat_stage"));
+                if graph[loc1].contains_key(&cond_val) {
+                    panic!("Graph exists");
+                } else {
+                    graph.get_mut(loc1).map(|val| {
+                        val.insert(
+                            cond_val,
+                            *(locations.get(&"oat_stage".to_string())).unwrap(),
+                        )
+                    });
+                    increment_graph.insert((*loc1, cond_val), i);
+                }
+                continue;
             }
         }
 
@@ -181,11 +188,11 @@ pub fn build_graph(
             ),
         };
 
-        if graph[&loc1].contains_key(&cond_val) {
+        if graph[loc1].contains_key(&cond_val) {
             panic!("Graph exists");
         } else {
-            graph.get_mut(&loc1).map(|val| val.insert(cond_val, *loc2));
+            graph.get_mut(loc1).map(|val| val.insert(cond_val, *loc2));
         }
     }
-    return graph;
+    return (graph, increment_graph);
 }
