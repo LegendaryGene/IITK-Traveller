@@ -15,6 +15,7 @@ pub struct TravelStat {
 }
 
 impl TravelStat {
+    // Construct a new instance.
     pub fn new(
         mem1: usize,
         mem1_lvl: usize,
@@ -51,16 +52,19 @@ impl TravelStat {
 
         match operation {
             2 => {
+                // "iit_gate_in_1"
                 let i = read!();
                 mem[self.mem1_lvl][self.mem1] = i;
                 mem_flag[self.mem1_lvl][self.mem1] = 0;
             }
             3 => {
+                // "iit_gate_in_2"
                 let i = read!();
                 mem[self.mem2_lvl][self.mem2] = i;
                 mem_flag[self.mem2_lvl][self.mem2] = 0;
             }
             4 => {
+                // "hall_2"
                 if mem_flag[self.mem1_lvl][self.mem1] == 1
                     || mem_flag[self.mem2_lvl][self.mem2] == 1
                 {
@@ -69,8 +73,9 @@ impl TravelStat {
                 mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
                     + mem[self.mem2_lvl][self.mem2];
                 mem_flag[self.mem3_lvl][self.mem3] = 0;
-            } // "hall_2"
+            }
             5 => {
+                // "hall_3"
                 if mem_flag[self.mem1_lvl][self.mem1] == 1
                     || mem_flag[self.mem2_lvl][self.mem2] == 1
                 {
@@ -79,8 +84,9 @@ impl TravelStat {
                 mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
                     * mem[self.mem2_lvl][self.mem2];
                 mem_flag[self.mem3_lvl][self.mem3] = 0;
-            } // "hall_3"
+            }
             6 => {
+                // "hall_5"
                 if mem_flag[self.mem1_lvl][self.mem1] == 1
                     || mem_flag[self.mem2_lvl][self.mem2] == 1
                 {
@@ -89,8 +95,9 @@ impl TravelStat {
                 mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
                     - mem[self.mem2_lvl][self.mem2];
                 mem_flag[self.mem3_lvl][self.mem3] = 0;
-            } // "hall_5"
+            }
             7 => {
+                // "hall_12"
                 if mem_flag[self.mem1_lvl][self.mem1] == 1
                     || mem_flag[self.mem2_lvl][self.mem2] == 1
                 {
@@ -99,32 +106,33 @@ impl TravelStat {
                 mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
                     / mem[self.mem2_lvl][self.mem2];
                 mem_flag[self.mem3_lvl][self.mem3] = 0;
-            } // "hall_12"
-
+            }
             8 => {
+                // "mt_1_3"
                 mem[self.mem1_lvl][self.mem1] = mem[self.mem3_lvl][self.mem3];
                 mem_flag[self.mem1_lvl][self.mem1] =
                     mem_flag[self.mem3_lvl][self.mem3]
-            } // "mt_1_3"
+            }
             9 => {
+                // "mt_3_1"
                 mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1];
                 mem_flag[self.mem3_lvl][self.mem3] =
                     mem_flag[self.mem1_lvl][self.mem1];
-            } // "mt_3_1"
+            }
             10 => {
+                // "mt_2_3"
                 mem[self.mem2_lvl][self.mem2] = mem[self.mem3_lvl][self.mem3];
                 mem_flag[self.mem2_lvl][self.mem2] =
                     mem_flag[self.mem3_lvl][self.mem3];
-            } // "mt_2_3"
+            }
             11 => {
+                // "mt_3_2"
                 mem[self.mem3_lvl][self.mem3] = mem[self.mem2_lvl][self.mem2];
                 mem_flag[self.mem3_lvl][self.mem3] =
                     mem_flag[self.mem2_lvl][self.mem2];
-            } // "mt_3_2"
-
-            12 => println!("{}", mem[self.mem1_lvl][self.mem1]), // "iit_gate_out_1"
-            13 => println!("{}", mem[self.mem2_lvl][self.mem2]), // "iit_gate_out_2"
-
+            }
+            12 => print!("{} ", mem[self.mem1_lvl][self.mem1]), // "iit_gate_out_1"
+            13 => print!("{} ", mem[self.mem2_lvl][self.mem2]), // "iit_gate_out_2"
             14 => {
                 // "lecture_hall_gt"
                 if mem_flag[self.mem1_lvl][self.mem1] == 1
@@ -176,7 +184,6 @@ impl TravelStat {
                     self.curr_loc = loc["lecture_hall_eq_f"];
                 }
             }
-
             23 => {
                 // "oat_stairs_1"
                 if mem_flag[self.mem1_lvl][self.mem1] == 1 {
@@ -227,7 +234,6 @@ impl TravelStat {
                 mem_flag[self.mem3_lvl][self.mem3] = 0;
             }
             32 => self.cond = 0, // "hall_13_c"
-
             33 => {
                 // "rm_1"
                 self.mem1 += 1;
@@ -264,7 +270,6 @@ impl TravelStat {
                     self.mem3 = 0;
                 }
             }
-
             36 => {
                 // "kd_1"
                 if self.mem1 != 0 {
@@ -298,7 +303,6 @@ impl TravelStat {
                     }
                 }
             }
-
             39 => {
                 // "eshop_1"
                 if mem_flag[self.mem1_lvl][self.mem1] == 1 {
@@ -313,7 +317,6 @@ impl TravelStat {
                 }
                 mem[self.mem2_lvl][self.mem2] *= mem[self.mem2_lvl][self.mem2]
             }
-
             41 => {
                 // "doaa_1"
                 let test: u32 = match mem[self.mem1_lvl][self.mem1].try_into() {
@@ -338,22 +341,18 @@ impl TravelStat {
                 };
                 println!("{}", ch);
             }
-
             43 => {
                 // "airstrip_land_1"
                 io::stdin()
                     .read_line(&mut inp)
                     .expect("Failed to read line");
-
                 let mut ptr_pos: usize = self.mem1;
                 let mut ptr_lvl: usize = self.mem1_lvl;
-
                 for c in inp.chars() {
                     let ascii = c as i32;
                     if ascii == 10 {
                         continue;
                     }
-
                     mem[ptr_lvl][ptr_pos] = ascii;
                     ptr_pos += 1;
                     if ptr_pos == 2048 {
@@ -361,16 +360,13 @@ impl TravelStat {
                         ptr_lvl += 1;
                     }
                 }
-
                 mem_flag[ptr_lvl][ptr_pos] = 1;
             }
-
             44 => {
                 // "airstrip_land_2"
                 io::stdin()
                     .read_line(&mut inp)
                     .expect("Failed to read line");
-
                 let mut ptr_pos: usize = self.mem2;
                 let mut ptr_lvl: usize = self.mem2_lvl;
 
@@ -379,7 +375,6 @@ impl TravelStat {
                     if ascii == 10 {
                         continue;
                     }
-
                     mem[ptr_lvl][ptr_pos] = ascii;
                     ptr_pos += 1;
                     if ptr_pos == 2048 {
@@ -387,55 +382,44 @@ impl TravelStat {
                         ptr_lvl += 1;
                     }
                 }
-
                 mem_flag[ptr_lvl][ptr_pos] = 1;
             }
-
             45 => {
                 // "airstrip_takeoff_1"
                 let mut ptr_pos = self.mem1;
                 let mut ptr_lvl = self.mem1_lvl;
-
                 while mem_flag[ptr_lvl][ptr_pos] != 1 {
                     let ch = match char::from_u32(mem[ptr_lvl][ptr_pos] as u32)
                     {
                         Some(c) => c,
                         None => panic!("Cannot convert into character!"),
                     };
-
                     print!("{}", ch);
-
                     ptr_pos += 1;
                     if ptr_pos == 2048 {
                         ptr_pos = 0;
                         ptr_lvl += 1;
                     }
                 }
-
                 println!();
             }
-
             46 => {
                 // "airstrip_takeoff_2"
                 let mut ptr_pos = self.mem2;
                 let mut ptr_lvl = self.mem2_lvl;
-
                 while mem_flag[ptr_lvl][ptr_pos] != 1 {
                     let ch = match char::from_u32(mem[ptr_lvl][ptr_pos] as u32)
                     {
                         Some(c) => c,
                         None => panic!("Cannot convert into character!"),
                     };
-
                     print!("{}", ch);
-
                     ptr_pos += 1;
                     if ptr_pos == 2048 {
                         ptr_pos = 0;
                         ptr_lvl += 1;
                     }
                 }
-
                 println!();
             }
             47 => {
@@ -448,7 +432,6 @@ impl TravelStat {
                 mem_flag[self.mem2_lvl][self.mem2] = 1;
                 mem[self.mem2_lvl][self.mem2] = 0;
             }
-
             49 => {
                 // "events_1"
                 if mem_flag[self.mem1_lvl][self.mem1] == 1 {
@@ -470,18 +453,12 @@ impl TravelStat {
                 }
             }
             55 => {
+                // "oat_stage"
                 if increment_graph.contains_key(&(self.prev_loc, self.cond)) {
                     let change_by: i32 = *(increment_graph
                         .get(&(self.prev_loc, self.cond))
                         .unwrap());
-                    // println!("Changing by: {}", change_by);
                     self.cond += change_by;
-                    // println!("Now the condition has changed to: {}", self.cond);
-                } else {
-                    // panic!(
-                    //     "Key: ({}, {}) not found!",
-                    //     self.prev_loc, self.cond
-                    // );
                 }
             }
             _ => panic!("No such operation exists!"),
@@ -516,8 +493,10 @@ impl TravelStat {
                 self.curr_loc, self.cond
             );
         }
+
         self.prev_loc = self.curr_loc;
         self.curr_loc = graph[&self.curr_loc][&self.cond];
+
         return self.travel(mem, mem_flag, locations, graph, increment_graph);
     }
 }

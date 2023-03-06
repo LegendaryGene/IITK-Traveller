@@ -15,7 +15,7 @@ where
     Ok(BufReader::new(file).lines())
 }
 
-// Lex the input file into a vector of vector.
+// Lex the input file into a vector of vectors. Also return the number of lines.
 pub fn store_input(filename: &String) -> (Vec<Vec<String>>, usize) {
     let mut tokens: Vec<Vec<String>> = Vec::new();
 
@@ -63,6 +63,7 @@ pub fn store_input(filename: &String) -> (Vec<Vec<String>>, usize) {
     return (tokens, linenum);
 }
 
+// Get a Hashmap of all locations in the language.
 pub fn create_map() -> HashMap<String, i32> {
     let locations = HashMap::from([
         ("start".to_string(), 0),
@@ -90,9 +91,10 @@ pub fn create_map() -> HashMap<String, i32> {
         ("lecture_hall_eq_f".to_string(), 22),
         ("oat_stairs_1".to_string(), 23),
         ("oat_stairs_2".to_string(), 24),
-        ("oat_stairs_c".to_string(), 25), // Deprecated. Do not remove. Even though it is obsolete, removing it causes the program to crash somehow, so here it will stay.
+        ("oat_stairs_c".to_string(), 25), // Do not remove. Even though it is obsolete, removing it causes the program to crash somehow, so here it will stay.
         ("southern_labs_1".to_string(), 26),
-        ("southern_labs_2".to_string(), 27), // Deprecated. Do not remove. Even though it is obsolete, removing it causes the program to crash somehow, so here it will stay.
+        ("southern_labs_2".to_string(), 27),
+        ("southern_labs_c".to_string(), 28), // Do not remove. Even though it is obsolete, removing it causes the program to crash somehow, so here it will stay.
         ("hall_13_1".to_string(), 29),
         ("hall_13_2".to_string(), 30),
         ("hall_13_3".to_string(), 31),
@@ -124,6 +126,8 @@ pub fn create_map() -> HashMap<String, i32> {
     return locations;
 }
 
+// Parser. Returns the graph of all interconnected locations along with a
+// special map of locations for the oat_stage location, called increment_graph.
 pub fn build_graph(
     tokens: &Vec<Vec<String>>,
     locations: &HashMap<String, i32>,
@@ -174,6 +178,9 @@ pub fn build_graph(
                         )
                     });
                     increment_graph.insert((*loc1, cond_val), i);
+                    // Stores from where you have come with what condition value
+                    // and by what condition value do you want to increment the
+                    // condition variable in map.
                 }
                 continue;
             }
@@ -193,7 +200,6 @@ pub fn build_graph(
         } else {
             graph.get_mut(loc1).map(|val| val.insert(cond_val, *loc2));
         }
-        println!("Loc1 is: {}", graph[loc1][&cond_val]);
     }
     return (graph, increment_graph);
 }
