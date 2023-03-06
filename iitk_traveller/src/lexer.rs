@@ -3,6 +3,7 @@ use std::convert::TryInto;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader, Lines};
 use std::path::Path;
+use substring::Substring;
 
 // Returns an Iterator to the Reader of the lines of the file. The output is
 // wrapped in a Result to allow error matching.
@@ -118,6 +119,7 @@ pub fn create_map() -> HashMap<String, i32> {
         ("events_2".to_string(), 52),
         ("events_2_t".to_string(), 53),
         ("events_2_f".to_string(), 54),
+        ("oat_stage".to_string(), 55),
     ]);
     return locations;
 }
@@ -126,8 +128,9 @@ pub fn build_graph(
     tokens: &Vec<Vec<String>>,
     locations: &HashMap<String, i32>,
     lines: usize,
-) -> HashMap<i32, HashMap<i32, i32>> {
+) -> (HashMap<i32, HashMap<i32, i32>>, HashMap<(i32, i32), i32>) {
     let mut graph: HashMap<i32, HashMap<i32, i32>> = HashMap::new();
+    let mut increment_graph: HashMap<(i32, i32), i32> = HashMap::new();
     for i in 0..locations.len() {
         graph.insert(i.try_into().unwrap(), HashMap::new());
     }
@@ -153,6 +156,29 @@ pub fn build_graph(
             ),
         };
 
+        if tokens[linenum][2].len() > "oat_stage".to_string().len() + 2 {
+            let s = tokens[linenum][2].substring(
+                "oat_stage".to_string().len() + 1,
+                tokens[linenum][2].len() - 1,
+            );
+            let conv = s.to_string().parse();
+            if conv.is_ok() {
+                let i: i32 = conv.unwrap();
+                if graph[loc1].contains_key(&cond_val) {
+                    panic!("Graph exists");
+                } else {
+                    graph.get_mut(loc1).map(|val| {
+                        val.insert(
+                            cond_val,
+                            *(locations.get(&"oat_stage".to_string())).unwrap(),
+                        )
+                    });
+                    increment_graph.insert((*loc1, cond_val), i);
+                }
+                continue;
+            }
+        }
+
         let loc2 = match locations.get(&tokens[linenum][2]) {
             Some(l) => l,
             None => panic!(
@@ -162,11 +188,11 @@ pub fn build_graph(
             ),
         };
 
-        if graph[&loc1].contains_key(&cond_val) {
+        if graph[loc1].contains_key(&cond_val) {
             panic!("Graph exists");
         } else {
-            graph.get_mut(&loc1).map(|val| val.insert(cond_val, *loc2));
+            graph.get_mut(loc1).map(|val| val.insert(cond_val, *loc2));
         }
     }
-    return graph;
+    return (graph, increment_graph);
 }
