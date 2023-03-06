@@ -195,7 +195,7 @@ impl TravelStat {
                 }
                 mem[self.mem2_lvl][self.mem2] += 1;
             }
-            25 => self.cond += 1, // "oat_stairs_c"
+            // 25 => self.cond += 1, // "oat_stairs_c"
             26 => {
                 // "southern_labs_1"
                 if mem_flag[self.mem1_lvl][self.mem1] == 1 {
@@ -210,7 +210,7 @@ impl TravelStat {
                 }
                 mem[self.mem2_lvl][self.mem2] -= 1;
             }
-            28 => self.cond -= 1, // "southern_labs_c"
+            // 28 => self.cond -= 1, // "southern_labs_c"
 
             29 => {
                 // "hall_13_1"

@@ -18,12 +18,7 @@ fn main() {
     let locations = lexer::create_map();
     let (graph, increment_graph) =
         lexer::build_graph(&tokens, &locations, lines);
-    // let mut traveller = traveller::TravelStat::new(2045, 0, 2046, 0, 2047, 0, 0, 0);
-    // for (key, value) in &graph[&0] {
-    //     println!("{}: {}", key, value);
-    // }
     let mut traveller = traveller::TravelStat::new(0, 0, 1, 0, 2, 0, 0, 0, 0);
-
     traveller.travel(
         &mut mem,
         &mut mem_flag,
