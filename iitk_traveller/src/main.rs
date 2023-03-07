@@ -8,21 +8,42 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let filename = match args.len() {
         2 => &args[1],
-        _ => panic!("Invalid parameters. Usage: ./interpreter <filename>!"),
+        _ =>{ 
+            println!("Invalid parameters. Usage: ./interpreter <filename>!");
+            return;
+        }
     };
 
     let mut mem: Vec<Vec<i32>> = vec![vec![0; 2048]]; // Initialise memory.
     let mut mem_flag: Vec<Vec<i8>> = vec![vec![0; 2048]]; // To check for EOL character.
-    let (tokens, lines) = lexer::store_input(filename); // Apply lexer.
+    let (tokens, lines) = match lexer::store_input(filename){
+        Ok((tokens, lines)) => (tokens, lines),
+        Err(e) => {
+            println!("Error: {}", e);
+            return;
+        }
+    }; // Apply lexer.
     let locations = lexer::create_map(); // Create a map of all possible locations.
     let (graph, increment_graph) =
-        lexer::build_graph(&tokens, &locations, lines); // Parse the code.
+        match lexer::build_graph(&tokens, &locations, lines){
+            Ok((graph, increment_graph)) => (graph, increment_graph),
+            Err(e) => {
+                println!("Error: {}", e);
+                return;
+            }
+        }; // Parse the code.
     let mut traveller = traveller::TravelStat::new(0, 0, 1, 0, 2, 0, 0, 0, 0); // Initialise Traveller.
-    traveller.travel(
+    match traveller.travel(
         &mut mem,
         &mut mem_flag,
         &locations,
         &graph,
         &increment_graph,
-    );
+    ) {
+        Ok(_) => {},
+        Err(e) => {
+            println!("Error: {}", e);
+            return;
+        }
+    };
 }
