@@ -107,8 +107,8 @@ pub fn create_map() -> HashMap<String, i32> {
         ("kd_3".to_string(), 38),
         ("eshop_1".to_string(), 39),
         ("eshop_2".to_string(), 40),
-        ("doaa_1".to_string(), 41),
-        ("doaa_2".to_string(), 42),
+        ("nankari_gate_out_1".to_string(), 41),
+        ("nankari_gate_out_2".to_string(), 42),
         ("airstrip_land_1".to_string(), 43),
         ("airstrip_land_2".to_string(), 44),
         ("airstrip_takeoff_1".to_string(), 45),
@@ -122,6 +122,8 @@ pub fn create_map() -> HashMap<String, i32> {
         ("events_2_t".to_string(), 53),
         ("events_2_f".to_string(), 54),
         ("oat_stage".to_string(), 55),
+        ("nankari_gate_in_1".to_string(), 56),
+        ("nankari_gate_in_2".to_string(), 57),
     ]);
     return locations;
 }

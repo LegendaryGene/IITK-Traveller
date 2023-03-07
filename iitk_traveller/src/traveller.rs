@@ -251,7 +251,7 @@ impl TravelStat {
                 self.mem2 += 1;
                 if self.mem2 == 2048 {
                     self.mem2_lvl += 1;
-                    if mem.len() <= self.mem3_lvl {
+                    if mem.len() <= self.mem2_lvl {
                         mem.push(vec![0; 2048]);
                         mem_flag.push(vec![0; 2048]);
                     }
@@ -318,7 +318,7 @@ impl TravelStat {
                 mem[self.mem2_lvl][self.mem2] *= mem[self.mem2_lvl][self.mem2]
             }
             41 => {
-                // "doaa_1"
+                // "nankari_gate_out_1"
                 let test: u32 = match mem[self.mem1_lvl][self.mem1].try_into() {
                     Ok(c) => c,
                     Err(_) => panic!("No equivalent character for the code!"),
@@ -327,10 +327,10 @@ impl TravelStat {
                     Some(c) => c,
                     None => panic!("Cannot convert into character!"),
                 };
-                println!("{}", ch);
+                print!("{} ", ch);
             }
             42 => {
-                // "doaa_2"
+                // "nankari_gate_out_2"
                 let test: u32 = match mem[self.mem2_lvl][self.mem2].try_into() {
                     Ok(c) => c,
                     Err(_) => panic!("No equivalent character for the code!"),
@@ -339,7 +339,7 @@ impl TravelStat {
                     Some(c) => c,
                     None => panic!("Cannot convert into character!"),
                 };
-                println!("{}", ch);
+                print!("{} ", ch);
             }
             43 => {
                 // "airstrip_land_1"
@@ -461,6 +461,16 @@ impl TravelStat {
                     self.cond += change_by;
                 }
             }
+            56 => {
+                let c: char = read!();
+                mem[self.mem1_lvl][self.mem1] = c as i32;
+                mem_flag[self.mem1_lvl][self.mem1] = 0;
+            }
+            57 => {
+                let c: char = read!();
+                mem[self.mem2_lvl][self.mem2] = c as i32;
+                mem_flag[self.mem2_lvl][self.mem2] = 0;
+            }
             _ => panic!("No such operation exists!"),
         }
     }
@@ -473,6 +483,7 @@ impl TravelStat {
         graph: &HashMap<i32, HashMap<i32, i32>>,
         increment_graph: &HashMap<(i32, i32), i32>,
     ) {
+        // println!("mem_1 = {}, mem_2 = {}, mem_1_lvl = {}, mem_2_lvl = {}, cond_val = {}", self.mem1, self.mem2, self.mem1_lvl, self.mem2_lvl, self.cond);
         if self.curr_loc == locations["finish"] {
             return;
         }
