@@ -16,11 +16,14 @@ where
 }
 
 // Lex the input file into a vector of vectors. Also return the number of lines.
-pub fn store_input(filename: &String) -> (Vec<Vec<String>>, usize) {
+pub fn store_input(filename: &String) -> Result<(Vec<Vec<String>>, usize), String> {
     let mut tokens: Vec<Vec<String>> = Vec::new();
 
     let lines: Lines<BufReader<File>> =
-        read_lines(filename).expect("Error in reading file!");
+        match read_lines(filename){
+            Ok(l) => l,
+            Err(_) => return Err(format!("Error in reading Filename!"))
+        };
 
     let mut linenum = 0;
     for l in lines {
@@ -28,7 +31,7 @@ pub fn store_input(filename: &String) -> (Vec<Vec<String>>, usize) {
         let line = match l {
             Ok(x) => x,
             Err(error) => {
-                panic!("Error in reading line {}: {}!", linenum, error);
+                return Err(format!("Error in reading line {}: {}!", linenum, error));
             }
         };
         if line.len() == 0 {
@@ -44,23 +47,23 @@ pub fn store_input(filename: &String) -> (Vec<Vec<String>>, usize) {
             for s in s2_iter {
                 let word = s.trim().to_string();
                 if word.len() == 0 {
-                    panic!(
+                    return Err(format!(
                         "Incorrect number of parameters in line {}",
                         linenum
-                    );
+                    ));
                 }
                 tokens.push(Vec::new());
                 tokens[linenum - 1].push(word);
             }
 
             if tokens[linenum - 1].len() != 3 {
-                panic!("Incorrect number of parameters in line {}", linenum);
+                return Err(format!("Incorrect number of parameters in line {}", linenum));
             }
         } else {
-            panic!("Incorrect number of parameters in line {}", linenum);
+            return Err(format!("Incorrect number of parameters in line {}", linenum));
         }
     }
-    return (tokens, linenum);
+    return Ok((tokens, linenum));
 }
 
 // Get a Hashmap of all locations in the language.
@@ -134,7 +137,7 @@ pub fn build_graph(
     tokens: &Vec<Vec<String>>,
     locations: &HashMap<String, i32>,
     lines: usize,
-) -> (HashMap<i32, HashMap<i32, i32>>, HashMap<(i32, i32), i32>) {
+) -> Result<(HashMap<i32, HashMap<i32, i32>>, HashMap<(i32, i32), i32>), String> {
     let mut graph: HashMap<i32, HashMap<i32, i32>> = HashMap::new();
     let mut increment_graph: HashMap<(i32, i32), i32> = HashMap::new();
     for i in 0..locations.len() {
@@ -147,19 +150,19 @@ pub fn build_graph(
         }
         let loc1 = match locations.get(&tokens[linenum][0]) {
             Some(l) => l,
-            None => panic!(
+            None => return Err(format!(
                 "Line {}: '{}' is not a valid landmark!",
                 linenum + 1,
                 tokens[linenum][0]
-            ),
+            )),
         };
 
         let cond_val: i32 = match tokens[linenum][1].parse() {
             Ok(num) => num,
-            Err(_) => panic!(
+            Err(_) => return Err(format!(
                 "Line {}: Given weight is not a valid integer value!",
                 linenum + 1
-            ),
+            )),
         };
 
         if tokens[linenum][2].len() > "oat_stage".to_string().len() + 2 {
@@ -171,7 +174,7 @@ pub fn build_graph(
             if conv.is_ok() {
                 let i: i32 = conv.unwrap();
                 if graph[loc1].contains_key(&cond_val) {
-                    panic!("Graph exists");
+                    return Err(format!("Graph exists"));
                 } else {
                     graph.get_mut(loc1).map(|val| {
                         val.insert(
@@ -190,18 +193,18 @@ pub fn build_graph(
 
         let loc2 = match locations.get(&tokens[linenum][2]) {
             Some(l) => l,
-            None => panic!(
+            None => return Err(format!(
                 "Line {}: '{}' is not a valid landmark!",
                 linenum + 1,
                 tokens[linenum][2]
-            ),
+            )),
         };
 
         if graph[loc1].contains_key(&cond_val) {
-            panic!("Graph exists");
+            return Err(format!("Graph exists"));
         } else {
             graph.get_mut(loc1).map(|val| val.insert(cond_val, *loc2));
         }
     }
-    return (graph, increment_graph);
+    return Ok((graph, increment_graph));
 }
