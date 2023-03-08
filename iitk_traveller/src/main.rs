@@ -45,7 +45,7 @@ fn main() {
         &mut mem,
         &mut mem_flag,
     ); // Initialise Traveller.
-    match traveller.travel(&locations, &graph, &increment_graph, 0) {
+    match traveller.travel(&locations, &graph, &increment_graph, 1000000000) {
         Ok(_) => {}
         Err(e) => {
             println!("Error: {}", e);

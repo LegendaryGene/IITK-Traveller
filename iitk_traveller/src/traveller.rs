@@ -608,9 +608,9 @@ impl TravelStat<'_> {
         locations: &HashMap<String, i32>,
         graph: &HashMap<i32, HashMap<i32, i32>>,
         increment_graph: &HashMap<(i32, i32), i32>,
-        mut depth: i32,
+        mut depth_limit: i32,
     ) -> Result<(), String> {
-        while self.curr_loc != locations["finish"] && depth < 1000000 {
+        while self.curr_loc != locations["finish"] && depth_limit > 0 {
             if self.curr_loc != locations["start"] {
                 match self.perform_operation(
                     locations,
@@ -632,17 +632,15 @@ impl TravelStat<'_> {
             self.prev_loc = self.curr_loc;
             self.curr_loc = graph[&self.curr_loc][&self.cond];
 
-            depth = depth + 1;
+            depth_limit -= 1;
         }
 
         if self.curr_loc == locations["finish"] {
             return Ok(());
-        }
-
-        if depth > 10000000 {
+        } else if depth_limit < 0 {
             return Err(format!("Too many operations! Please check for infinite loops or other similar stack overflows."));
+        } else {
+            return Err(format!("Something went wrong!"));
         }
-
-        return Err(format!("Something went wrong"));
     }
 }
