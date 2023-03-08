@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::io::{self};
 use text_io::read;
 
-pub struct TravelStat {
+pub struct TravelStat<'a> {
     mem1: usize,
     mem1_lvl: usize,
     mem2: usize,
@@ -12,11 +12,16 @@ pub struct TravelStat {
     cond: i32,
     curr_loc: i32,
     prev_loc: i32,
+    mem: &'a mut Vec<Vec<i32>>,
+    mem_flag: &'a mut Vec<Vec<i8>>,
+    locations: &'a HashMap<String, i32>,
+    graph: &'a HashMap<i32, HashMap<i32, i32>>,
+    increment_graph: &'a HashMap<(i32, i32), i32>,
 }
 
-impl TravelStat {
+impl TravelStat<'_> {
     // Construct a new instance.
-    pub fn new(
+    pub fn new<'a>(
         mem1: usize,
         mem1_lvl: usize,
         mem2: usize,
@@ -26,7 +31,12 @@ impl TravelStat {
         cond: i32,
         curr_loc: i32,
         prev_loc: i32,
-    ) -> TravelStat {
+        mem: &'a mut Vec<Vec<i32>>,
+        mem_flag: &'a mut Vec<Vec<i8>>,
+        locations: &'a HashMap<String, i32>,
+        graph: &'a HashMap<i32, HashMap<i32, i32>>,
+        increment_graph: &'a HashMap<(i32, i32), i32>,
+    ) -> TravelStat<'a> {
         TravelStat {
             mem1,
             mem1_lvl,
@@ -37,16 +47,17 @@ impl TravelStat {
             cond,
             curr_loc,
             prev_loc,
+            mem,
+            mem_flag,
+            locations,
+            graph,
+            increment_graph
         }
     }
 
     fn perform_operation(
         &mut self,
         operation: i32,
-        mem: &mut Vec<Vec<i32>>,
-        mem_flag: &mut Vec<Vec<i8>>,
-        loc: &HashMap<String, i32>,
-        increment_graph: &HashMap<(i32, i32), i32>,
     ) -> Result<(), String> {
         let mut inp = "".to_string();
 
@@ -54,172 +65,172 @@ impl TravelStat {
             2 => {
                 // "iit_gate_in_1"
                 let i = read!();
-                mem[self.mem1_lvl][self.mem1] = i;
-                mem_flag[self.mem1_lvl][self.mem1] = 0;
+                self.mem[self.mem1_lvl][self.mem1] = i;
+                self.mem_flag[self.mem1_lvl][self.mem1] = 0;
                 return Ok(());
             }
             3 => {
                 // "iit_gate_in_2"
                 let i = read!();
-                mem[self.mem2_lvl][self.mem2] = i;
-                mem_flag[self.mem2_lvl][self.mem2] = 0;
+                self.mem[self.mem2_lvl][self.mem2] = i;
+                self.mem_flag[self.mem2_lvl][self.mem2] = 0;
                 return Ok(());
             }
             4 => {
                 // "hall_2"
-                if mem_flag[self.mem1_lvl][self.mem1] == 1
-                    || mem_flag[self.mem2_lvl][self.mem2] == 1
+                if self.mem_flag[self.mem1_lvl][self.mem1] == 1
+                    || self.mem_flag[self.mem2_lvl][self.mem2] == 1
                 {
                     return Err(format!("hall_2 operation is not allowed for EOS literal"));
                 }
-                mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
-                    + mem[self.mem2_lvl][self.mem2];
-                mem_flag[self.mem3_lvl][self.mem3] = 0;
+                self.mem[self.mem3_lvl][self.mem3] = self.mem[self.mem1_lvl][self.mem1]
+                    + self.mem[self.mem2_lvl][self.mem2];
+                self.mem_flag[self.mem3_lvl][self.mem3] = 0;
                 return Ok(());
             }
             5 => {
                 // "hall_3"
-                if mem_flag[self.mem1_lvl][self.mem1] == 1
-                    || mem_flag[self.mem2_lvl][self.mem2] == 1
+                if self.mem_flag[self.mem1_lvl][self.mem1] == 1
+                    || self.mem_flag[self.mem2_lvl][self.mem2] == 1
                 {
                     return Err(format!("hall_3 operation is not allowed for EOS literal"));
                 }
-                mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
-                    * mem[self.mem2_lvl][self.mem2];
-                mem_flag[self.mem3_lvl][self.mem3] = 0;
+                self.mem[self.mem3_lvl][self.mem3] = self.mem[self.mem1_lvl][self.mem1]
+                    * self.mem[self.mem2_lvl][self.mem2];
+                self.mem_flag[self.mem3_lvl][self.mem3] = 0;
                 return Ok(());
             }
             6 => {
                 // "hall_5"
-                if mem_flag[self.mem1_lvl][self.mem1] == 1
-                    || mem_flag[self.mem2_lvl][self.mem2] == 1
+                if self.mem_flag[self.mem1_lvl][self.mem1] == 1
+                    || self.mem_flag[self.mem2_lvl][self.mem2] == 1
                 {
                     return Err(format!("hall_5 operation is not allowed for EOS literal"));
                 }
-                mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
-                    - mem[self.mem2_lvl][self.mem2];
-                mem_flag[self.mem3_lvl][self.mem3] = 0;
+                self.mem[self.mem3_lvl][self.mem3] = self.mem[self.mem1_lvl][self.mem1]
+                    - self.mem[self.mem2_lvl][self.mem2];
+                self.mem_flag[self.mem3_lvl][self.mem3] = 0;
                 return Ok(());
             }
             7 => {
                 // "hall_12"
-                if mem_flag[self.mem1_lvl][self.mem1] == 1
-                    || mem_flag[self.mem2_lvl][self.mem2] == 1
+                if self.mem_flag[self.mem1_lvl][self.mem1] == 1
+                    || self.mem_flag[self.mem2_lvl][self.mem2] == 1
                 {
                     return Err(format!("hall_12 operation is not allowed for EOS literal"));
                 }
-                mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1]
-                    / mem[self.mem2_lvl][self.mem2];
-                mem_flag[self.mem3_lvl][self.mem3] = 0;
+                self.mem[self.mem3_lvl][self.mem3] = self.mem[self.mem1_lvl][self.mem1]
+                    / self.mem[self.mem2_lvl][self.mem2];
+                self.mem_flag[self.mem3_lvl][self.mem3] = 0;
                 return Ok(());
             }
             8 => {
                 // "mt_1_3"
-                mem[self.mem1_lvl][self.mem1] = mem[self.mem3_lvl][self.mem3];
-                mem_flag[self.mem1_lvl][self.mem1] =
-                    mem_flag[self.mem3_lvl][self.mem3];
+                self.mem[self.mem1_lvl][self.mem1] = self.mem[self.mem3_lvl][self.mem3];
+                self.mem_flag[self.mem1_lvl][self.mem1] =
+                    self.mem_flag[self.mem3_lvl][self.mem3];
                 return Ok(());
             }
             9 => {
                 // "mt_3_1"
-                mem[self.mem3_lvl][self.mem3] = mem[self.mem1_lvl][self.mem1];
-                mem_flag[self.mem3_lvl][self.mem3] =
-                    mem_flag[self.mem1_lvl][self.mem1];
+                self.mem[self.mem3_lvl][self.mem3] = self.mem[self.mem1_lvl][self.mem1];
+                self.mem_flag[self.mem3_lvl][self.mem3] =
+                    self.mem_flag[self.mem1_lvl][self.mem1];
                 return Ok(());
             }
             10 => {
                 // "mt_2_3"
-                mem[self.mem2_lvl][self.mem2] = mem[self.mem3_lvl][self.mem3];
-                mem_flag[self.mem2_lvl][self.mem2] =
-                    mem_flag[self.mem3_lvl][self.mem3];
+                self.mem[self.mem2_lvl][self.mem2] = self.mem[self.mem3_lvl][self.mem3];
+                self.mem_flag[self.mem2_lvl][self.mem2] =
+                    self.mem_flag[self.mem3_lvl][self.mem3];
                 return Ok(());
             }
             11 => {
                 // "mt_3_2"
-                mem[self.mem3_lvl][self.mem3] = mem[self.mem2_lvl][self.mem2];
-                mem_flag[self.mem3_lvl][self.mem3] =
-                    mem_flag[self.mem2_lvl][self.mem2];
+                self.mem[self.mem3_lvl][self.mem3] = self.mem[self.mem2_lvl][self.mem2];
+                self.mem_flag[self.mem3_lvl][self.mem3] =
+                    self.mem_flag[self.mem2_lvl][self.mem2];
                 return Ok(());
             }
-            12 => {print!("{} ", mem[self.mem1_lvl][self.mem1]);
+            12 => {print!("{} ", self.mem[self.mem1_lvl][self.mem1]);
                     return Ok(());}, // "iit_gate_out_1"
-            13 => {print!("{} ", mem[self.mem2_lvl][self.mem2]);
+            13 => {print!("{} ", self.mem[self.mem2_lvl][self.mem2]);
                     return Ok(());}, // "iit_gate_out_2"
             14 => {
                 // "lecture_hall_gt"
-                if mem_flag[self.mem1_lvl][self.mem1] == 1
-                    || mem_flag[self.mem2_lvl][self.mem2] == 1
+                if self.mem_flag[self.mem1_lvl][self.mem1] == 1
+                    || self.mem_flag[self.mem2_lvl][self.mem2] == 1
                 {
                     return Err(format!("lecture_hall_gt operation is not allowed for EOS literal"));
                 }
-                if mem[self.mem1_lvl][self.mem1] > mem[self.mem2_lvl][self.mem2]
+                if self.mem[self.mem1_lvl][self.mem1] > self.mem[self.mem2_lvl][self.mem2]
                 {
                     self.prev_loc = self.curr_loc;
-                    self.curr_loc = loc["lecture_hall_gt_t"];
+                    self.curr_loc = self.locations["lecture_hall_gt_t"];
                     return Ok(());
                 } else {
                     self.prev_loc = self.curr_loc;
-                    self.curr_loc = loc["lecture_hall_gt_f"];
+                    self.curr_loc = self.locations["lecture_hall_gt_f"];
                     return Ok(());
                 }
             }
             17 => {
                 // "lecture_hall_lt"
-                if mem_flag[self.mem1_lvl][self.mem1] == 1
-                    || mem_flag[self.mem2_lvl][self.mem2] == 1
+                if self.mem_flag[self.mem1_lvl][self.mem1] == 1
+                    || self.mem_flag[self.mem2_lvl][self.mem2] == 1
                 {
                     return Err(format!("lecture_hall_lt operation is not allowed for EOS literal"));
                 }
-                if mem[self.mem1_lvl][self.mem1] < mem[self.mem2_lvl][self.mem2]
+                if self.mem[self.mem1_lvl][self.mem1] < self.mem[self.mem2_lvl][self.mem2]
                 {
                     self.prev_loc = self.curr_loc;
-                    self.curr_loc = loc["lecture_hall_lt_t"];
+                    self.curr_loc = self.locations["lecture_hall_lt_t"];
                     return Ok(());
                 } else {
                     self.prev_loc = self.curr_loc;
-                    self.curr_loc = loc["lecture_hall_lt_f"];
+                    self.curr_loc = self.locations["lecture_hall_lt_f"];
                     return Ok(());
                 }
             }
             20 => {
                 // "lecture_hall_eq"
-                if mem_flag[self.mem1_lvl][self.mem1] == 1
-                    || mem_flag[self.mem2_lvl][self.mem2] == 1
+                if self.mem_flag[self.mem1_lvl][self.mem1] == 1
+                    || self.mem_flag[self.mem2_lvl][self.mem2] == 1
                 {
                     return Err(format!("lecture_hall_eq operation is not allowed for EOS literal"));
                 }
-                if mem[self.mem1_lvl][self.mem1]
-                    == mem[self.mem2_lvl][self.mem2]
-                    && mem_flag[self.mem1_lvl][self.mem1]
-                        == mem_flag[self.mem2_lvl][self.mem2]
+                if self.mem[self.mem1_lvl][self.mem1]
+                    == self.mem[self.mem2_lvl][self.mem2]
+                    && self.mem_flag[self.mem1_lvl][self.mem1]
+                        == self.mem_flag[self.mem2_lvl][self.mem2]
                 {
                     self.prev_loc = self.curr_loc;
-                    self.curr_loc = loc["lecture_hall_eq_t"];
+                    self.curr_loc = self.locations["lecture_hall_eq_t"];
                     return Ok(());
                 } else {
                     self.prev_loc = self.curr_loc;
-                    self.curr_loc = loc["lecture_hall_eq_f"];
+                    self.curr_loc = self.locations["lecture_hall_eq_f"];
                     return Ok(());
                 }
             }
             23 => {
                 // "oat_stairs_1"
-                if mem_flag[self.mem1_lvl][self.mem1] == 1 {
+                if self.mem_flag[self.mem1_lvl][self.mem1] == 1 {
                     return Err(format!(
                         "oat_stairs_1 operation is not allowed for EOS literal"
                     ));
                 }
-                mem[self.mem1_lvl][self.mem1] += 1;
+                self.mem[self.mem1_lvl][self.mem1] += 1;
                 return Ok(());
             }
             24 => {
                 // "oat_stairs_2"
-                if mem_flag[self.mem2_lvl][self.mem2] == 1 {
+                if self.mem_flag[self.mem2_lvl][self.mem2] == 1 {
                     return Err(format!(
                         "oat_stairs_2 operation is not allowed for EOS literal"
                     ));
                 }
-                mem[self.mem2_lvl][self.mem2] += 1;
+                self.mem[self.mem2_lvl][self.mem2] += 1;
                 return Ok(());
             }
             25 => {
@@ -228,18 +239,18 @@ impl TravelStat {
             } // "oat_stairs_c"
             26 => {
                 // "southern_labs_1"
-                if mem_flag[self.mem1_lvl][self.mem1] == 1 {
+                if self.mem_flag[self.mem1_lvl][self.mem1] == 1 {
                     return Err(format!("southern_labs_1 operation is not allowed for EOS literal"));
                 }
-                mem[self.mem1_lvl][self.mem1] -= 1;
+                self.mem[self.mem1_lvl][self.mem1] -= 1;
                 return Ok(());
             }
             27 => {
                 // "southern_labs_2"
-                if mem_flag[self.mem2_lvl][self.mem2] == 1 {
+                if self.mem_flag[self.mem2_lvl][self.mem2] == 1 {
                     return Err(format!("southern_labs_2 operation is not allowed for EOS literal"));
                 }
-                mem[self.mem2_lvl][self.mem2] -= 1;
+                self.mem[self.mem2_lvl][self.mem2] -= 1;
                 return Ok(());
             }
             28 => {
@@ -248,20 +259,20 @@ impl TravelStat {
             } // "southern_labs_c"
             29 => {
                 // "hall_13_1"
-                mem[self.mem1_lvl][self.mem1] = 0;
-                mem_flag[self.mem1_lvl][self.mem1] = 0;
+                self.mem[self.mem1_lvl][self.mem1] = 0;
+                self.mem_flag[self.mem1_lvl][self.mem1] = 0;
                 return Ok(());
             }
             30 => {
                 // "hall_13_2"
-                mem[self.mem2_lvl][self.mem2] = 0;
-                mem_flag[self.mem2_lvl][self.mem2] = 0;
+                self.mem[self.mem2_lvl][self.mem2] = 0;
+                self.mem_flag[self.mem2_lvl][self.mem2] = 0;
                 return Ok(());
             }
             31 => {
                 // "hall_13_3"
-                mem[self.mem3_lvl][self.mem3] = 0;
-                mem_flag[self.mem3_lvl][self.mem3] = 0;
+                self.mem[self.mem3_lvl][self.mem3] = 0;
+                self.mem_flag[self.mem3_lvl][self.mem3] = 0;
                 return Ok(());
             }
             32 => {
@@ -274,9 +285,9 @@ impl TravelStat {
                 self.mem1 += 1;
                 if self.mem1 == 2048 {
                     self.mem1_lvl += 1;
-                    if mem.len() <= self.mem1_lvl {
-                        mem.push(vec![0; 2048]);
-                        mem_flag.push(vec![0; 2048]);
+                    if self.mem.len() <= self.mem1_lvl {
+                        self.mem.push(vec![0; 2048]);
+                        self.mem_flag.push(vec![0; 2048]);
                     }
                     self.mem1 = 0;
                 }
@@ -287,9 +298,9 @@ impl TravelStat {
                 self.mem2 += 1;
                 if self.mem2 == 2048 {
                     self.mem2_lvl += 1;
-                    if mem.len() <= self.mem2_lvl {
-                        mem.push(vec![0; 2048]);
-                        mem_flag.push(vec![0; 2048]);
+                    if self.mem.len() <= self.mem2_lvl {
+                        self.mem.push(vec![0; 2048]);
+                        self.mem_flag.push(vec![0; 2048]);
                     }
                     self.mem2 = 0;
                 }
@@ -300,9 +311,9 @@ impl TravelStat {
                 self.mem3 += 1;
                 if self.mem3 == 2048 {
                     self.mem3_lvl += 1;
-                    if mem.len() <= self.mem3_lvl {
-                        mem.push(vec![0; 2048]);
-                        mem_flag.push(vec![0; 2048]);
+                    if self.mem.len() <= self.mem3_lvl {
+                        self.mem.push(vec![0; 2048]);
+                        self.mem_flag.push(vec![0; 2048]);
                     }
                     self.mem3 = 0;
                 }
@@ -346,23 +357,23 @@ impl TravelStat {
             }
             39 => {
                 // "eshop_1"
-                if mem_flag[self.mem1_lvl][self.mem1] == 1 {
+                if self.mem_flag[self.mem1_lvl][self.mem1] == 1 {
                     return Err(format!("Eshop1 operation not allowed for EOS literals"));
                 }
-                mem[self.mem1_lvl][self.mem1] *= mem[self.mem1_lvl][self.mem1];
+                self.mem[self.mem1_lvl][self.mem1] *= self.mem[self.mem1_lvl][self.mem1];
                 return Ok(());
             }
             40 => {
                 // "eshop_2"
-                if mem_flag[self.mem2_lvl][self.mem2] == 1 {
+                if self.mem_flag[self.mem2_lvl][self.mem2] == 1 {
                     return Err(format!("Eshop2 operation not allowed for EOS literals"));
                 }
-                mem[self.mem2_lvl][self.mem2] *= mem[self.mem2_lvl][self.mem2];
+                self.mem[self.mem2_lvl][self.mem2] *= self.mem[self.mem2_lvl][self.mem2];
                 return Ok(());
             }
             41 => {
                 // "nankari_gate_out_1"
-                let test: u32 = match mem[self.mem1_lvl][self.mem1].try_into() {
+                let test: u32 = match self.mem[self.mem1_lvl][self.mem1].try_into() {
                     Ok(c) => c,
                     Err(_) => return Err(format!("No equivalent character for the code!")),
                 };
@@ -375,7 +386,7 @@ impl TravelStat {
             }
             42 => {
                 // "nankari_gate_out_2"
-                let test: u32 = match mem[self.mem2_lvl][self.mem2].try_into() {
+                let test: u32 = match self.mem[self.mem2_lvl][self.mem2].try_into() {
                     Ok(c) => c,
                     Err(_) => return Err(format!("No equivalent character for the code!")),
                 };
@@ -406,14 +417,14 @@ impl TravelStat {
                     if ascii == 10 {
                         continue;
                     }
-                    mem[ptr_lvl][ptr_pos] = ascii;
+                    self.mem[ptr_lvl][ptr_pos] = ascii;
                     ptr_pos += 1;
                     if ptr_pos == 2048 {
                         ptr_pos = 0;
                         ptr_lvl += 1;
                     }
                 }
-                mem_flag[ptr_lvl][ptr_pos] = 1;
+                self.mem_flag[ptr_lvl][ptr_pos] = 1;
                 return Ok(());
             }
             44 => {
@@ -437,22 +448,22 @@ impl TravelStat {
                     if ascii == 10 {
                         continue;
                     }
-                    mem[ptr_lvl][ptr_pos] = ascii;
+                    self.mem[ptr_lvl][ptr_pos] = ascii;
                     ptr_pos += 1;
                     if ptr_pos == 2048 {
                         ptr_pos = 0;
                         ptr_lvl += 1;
                     }
                 }
-                mem_flag[ptr_lvl][ptr_pos] = 1;
+                self.mem_flag[ptr_lvl][ptr_pos] = 1;
                 return Ok(());
             }
             45 => {
                 // "airstrip_takeoff_1"
                 let mut ptr_pos = self.mem1;
                 let mut ptr_lvl = self.mem1_lvl;
-                while mem_flag[ptr_lvl][ptr_pos] != 1 {
-                    let ch = match char::from_u32(mem[ptr_lvl][ptr_pos] as u32)
+                while self.mem_flag[ptr_lvl][ptr_pos] != 1 {
+                    let ch = match char::from_u32(self.mem[ptr_lvl][ptr_pos] as u32)
                     {
                         Some(c) => c,
                         None => return Err(format!("Cannot convert into character!")),
@@ -471,8 +482,8 @@ impl TravelStat {
                 // "airstrip_takeoff_2"
                 let mut ptr_pos = self.mem2;
                 let mut ptr_lvl = self.mem2_lvl;
-                while mem_flag[ptr_lvl][ptr_pos] != 1 {
-                    let ch = match char::from_u32(mem[ptr_lvl][ptr_pos] as u32)
+                while self.mem_flag[ptr_lvl][ptr_pos] != 1 {
+                    let ch = match char::from_u32(self.mem[ptr_lvl][ptr_pos] as u32)
                     {
                         Some(c) => c,
                         None => return Err(format!("Cannot convert into character!")),
@@ -489,45 +500,45 @@ impl TravelStat {
             }
             47 => {
                 // "pronite_1"
-                mem[self.mem1_lvl][self.mem1] = 0;
-                mem_flag[self.mem1_lvl][self.mem1] = 1;
+                self.mem[self.mem1_lvl][self.mem1] = 0;
+                self.mem_flag[self.mem1_lvl][self.mem1] = 1;
                 return Ok(());
             }
             48 => {
                 // "pronite_2"
-                mem_flag[self.mem2_lvl][self.mem2] = 1;
-                mem[self.mem2_lvl][self.mem2] = 0;
+                self.mem_flag[self.mem2_lvl][self.mem2] = 1;
+                self.mem[self.mem2_lvl][self.mem2] = 0;
                 return Ok(());
             }
             49 => {
                 // "events_1"
-                if mem_flag[self.mem1_lvl][self.mem1] == 1 {
+                if self.mem_flag[self.mem1_lvl][self.mem1] == 1 {
                     self.prev_loc = self.curr_loc;
-                    self.curr_loc = loc["events_1_t"];
+                    self.curr_loc = self.locations["events_1_t"];
                 } else {
                     self.prev_loc = self.curr_loc;
-                    self.curr_loc = loc["events_1_f"];
+                    self.curr_loc = self.locations["events_1_f"];
                 }
                 return Ok(());
             }
             52 => {
                 // "events_2"
-                if mem_flag[self.mem2_lvl][self.mem2] == 1 {
+                if self.mem_flag[self.mem2_lvl][self.mem2] == 1 {
                     self.prev_loc = self.curr_loc;
-                    self.curr_loc = loc["events_2_t"];
+                    self.curr_loc = self.locations["events_2_t"];
                 } else {
                     self.prev_loc = self.curr_loc;
-                    self.curr_loc = loc["events_2_f"];
+                    self.curr_loc = self.locations["events_2_f"];
                 }
                 return Ok(());
             }
             55 => {
                 // "oat_stage"
-                if increment_graph.contains_key(&(self.prev_loc, self.cond)) {
+                if self.increment_graph.contains_key(&(self.prev_loc, self.cond)) {
                     // let change_by: i32 = *(increment_graph
                     //     .get(&(self.prev_loc, self.cond))
                     //     .unwrap());
-                    let change_by_ad: &i32 = match increment_graph.get(&(self.prev_loc, self.cond)) {
+                    let change_by_ad: &i32 = match self.increment_graph.get(&(self.prev_loc, self.cond)) {
                         Some(v) => v,
                         None => return Err(format!("Key not found!"))
                     };
@@ -539,14 +550,14 @@ impl TravelStat {
             }
             56 => {
                 let c: char = read!();
-                mem[self.mem1_lvl][self.mem1] = c as i32;
-                mem_flag[self.mem1_lvl][self.mem1] = 0;
+                self.mem[self.mem1_lvl][self.mem1] = c as i32;
+                self.mem_flag[self.mem1_lvl][self.mem1] = 0;
                 return Ok(());
             }
             57 => {
                 let c: char = read!();
-                mem[self.mem2_lvl][self.mem2] = c as i32;
-                mem_flag[self.mem2_lvl][self.mem2] = 0;
+                self.mem[self.mem2_lvl][self.mem2] = c as i32;
+                self.mem_flag[self.mem2_lvl][self.mem2] = 0;
                 return Ok(());
             }
             _ => return Err(format!("No such operation exists!")),
@@ -555,37 +566,40 @@ impl TravelStat {
 
     pub fn travel(
         &mut self,
-        mem: &mut Vec<Vec<i32>>,
-        mem_flag: &mut Vec<Vec<i8>>,
-        locations: &HashMap<String, i32>,
-        graph: &HashMap<i32, HashMap<i32, i32>>,
-        increment_graph: &HashMap<(i32, i32), i32>,
+        mut depth: i32
     ) -> Result<(), String> {
         // println!("mem_1 = {}, mem_2 = {}, mem_1_lvl = {}, mem_2_lvl = {}, cond_val = {}", self.mem1, self.mem2, self.mem1_lvl, self.mem2_lvl, self.cond);
-        if self.curr_loc == locations["finish"] {
+
+        while self.curr_loc != self.locations["finish"] && depth < 1000000 {
+
+            if self.curr_loc != self.locations["start"] {
+                self.perform_operation(
+                    self.curr_loc,
+                )?;
+            }
+
+            if !self.graph[&self.curr_loc].contains_key(&self.cond) {
+                return Err(format!(
+                    "Stuck in landmark number {} with condition {}",
+                    self.curr_loc, self.cond
+                ));
+            }
+
+            self.prev_loc = self.curr_loc;
+            self.curr_loc = self.graph[&self.curr_loc][&self.cond];
+
+            depth = depth + 1;
+            println!("{}", depth);
+        }
+
+        if self.curr_loc == self.locations["finish"] {
             return Ok(());
         }
 
-        if self.curr_loc != locations["start"] {
-            self.perform_operation(
-                self.curr_loc,
-                mem,
-                mem_flag,
-                &locations,
-                increment_graph,
-            )?;
+        if depth >= 1000000 {
+            return Err(format!("Too many operations! Please check for infinite loops and similar stack overflows"));    
         }
 
-        if !graph[&self.curr_loc].contains_key(&self.cond) {
-            return Err(format!(
-                "Stuck in landmark number {} with condition {}",
-                self.curr_loc, self.cond
-            ));
-        }
-
-        self.prev_loc = self.curr_loc;
-        self.curr_loc = graph[&self.curr_loc][&self.cond];
-
-        return self.travel(mem, mem_flag, locations, graph, increment_graph);
+        return Err(format!("Something went wrong"));
     }
 }

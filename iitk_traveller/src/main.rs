@@ -32,13 +32,9 @@ fn main() {
                 return;
             }
         }; // Parse the code.
-    let mut traveller = traveller::TravelStat::new(0, 0, 1, 0, 2, 0, 0, 0, 0); // Initialise Traveller.
+    let mut traveller = traveller::TravelStat::new(0, 0, 1, 0, 2, 0, 0, 0, 0, &mut mem, &mut mem_flag, &locations, &graph, &increment_graph); // Initialise Traveller.
     match traveller.travel(
-        &mut mem,
-        &mut mem_flag,
-        &locations,
-        &graph,
-        &increment_graph,
+        0
     ) {
         Ok(_) => {},
         Err(e) => {
