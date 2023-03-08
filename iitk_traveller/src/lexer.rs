@@ -16,14 +16,15 @@ where
 }
 
 // Lex the input file into a vector of vectors. Also return the number of lines.
-pub fn store_input(filename: &String) -> Result<(Vec<Vec<String>>, usize), String> {
+pub fn store_input(
+    filename: &String,
+) -> Result<(Vec<Vec<String>>, usize), String> {
     let mut tokens: Vec<Vec<String>> = Vec::new();
 
-    let lines: Lines<BufReader<File>> =
-        match read_lines(filename){
-            Ok(l) => l,
-            Err(_) => return Err(format!("Error in reading Filename!"))
-        };
+    let lines: Lines<BufReader<File>> = match read_lines(filename) {
+        Ok(l) => l,
+        Err(_) => return Err(format!("Error in reading Filename!")),
+    };
 
     let mut linenum = 0;
     for l in lines {
@@ -31,7 +32,10 @@ pub fn store_input(filename: &String) -> Result<(Vec<Vec<String>>, usize), Strin
         let line = match l {
             Ok(x) => x,
             Err(error) => {
-                return Err(format!("Error in reading line {}: {}!", linenum, error));
+                return Err(format!(
+                    "Error in reading line {}: {}!",
+                    linenum, error
+                ));
             }
         };
         if line.len() == 0 {
@@ -57,10 +61,16 @@ pub fn store_input(filename: &String) -> Result<(Vec<Vec<String>>, usize), Strin
             }
 
             if tokens[linenum - 1].len() != 3 {
-                return Err(format!("Incorrect number of parameters in line {}", linenum));
+                return Err(format!(
+                    "Incorrect number of parameters in line {}",
+                    linenum
+                ));
             }
         } else {
-            return Err(format!("Incorrect number of parameters in line {}", linenum));
+            return Err(format!(
+                "Incorrect number of parameters in line {}",
+                linenum
+            ));
         }
     }
     return Ok((tokens, linenum));
@@ -137,7 +147,8 @@ pub fn build_graph(
     tokens: &Vec<Vec<String>>,
     locations: &HashMap<String, i32>,
     lines: usize,
-) -> Result<(HashMap<i32, HashMap<i32, i32>>, HashMap<(i32, i32), i32>), String> {
+) -> Result<(HashMap<i32, HashMap<i32, i32>>, HashMap<(i32, i32), i32>), String>
+{
     let mut graph: HashMap<i32, HashMap<i32, i32>> = HashMap::new();
     let mut increment_graph: HashMap<(i32, i32), i32> = HashMap::new();
     for i in 0..locations.len() {
@@ -150,19 +161,23 @@ pub fn build_graph(
         }
         let loc1 = match locations.get(&tokens[linenum][0]) {
             Some(l) => l,
-            None => return Err(format!(
-                "Line {}: '{}' is not a valid landmark!",
-                linenum + 1,
-                tokens[linenum][0]
-            )),
+            None => {
+                return Err(format!(
+                    "Line {}: '{}' is not a valid landmark!",
+                    linenum + 1,
+                    tokens[linenum][0]
+                ))
+            }
         };
 
         let cond_val: i32 = match tokens[linenum][1].parse() {
             Ok(num) => num,
-            Err(_) => return Err(format!(
-                "Line {}: Given weight is not a valid integer value!",
-                linenum + 1
-            )),
+            Err(_) => {
+                return Err(format!(
+                    "Line {}: Given weight is not a valid integer value!",
+                    linenum + 1
+                ))
+            }
         };
 
         if tokens[linenum][2].len() > "oat_stage".to_string().len() + 2 {
@@ -193,11 +208,13 @@ pub fn build_graph(
 
         let loc2 = match locations.get(&tokens[linenum][2]) {
             Some(l) => l,
-            None => return Err(format!(
-                "Line {}: '{}' is not a valid landmark!",
-                linenum + 1,
-                tokens[linenum][2]
-            )),
+            None => {
+                return Err(format!(
+                    "Line {}: '{}' is not a valid landmark!",
+                    linenum + 1,
+                    tokens[linenum][2]
+                ))
+            }
         };
 
         if graph[loc1].contains_key(&cond_val) {
