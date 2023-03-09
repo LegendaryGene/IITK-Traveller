@@ -410,7 +410,7 @@ impl TravelStat<'_> {
                         return Err(format!("Cannot convert into character!"))
                     }
                 };
-                print!("{} ", ch);
+                print!("{}", ch);
                 return Ok(());
             }
             42 => {
@@ -430,7 +430,7 @@ impl TravelStat<'_> {
                         return Err(format!("Cannot convert into character!"))
                     }
                 };
-                print!("{} ", ch);
+                print!("{}", ch);
                 return Ok(());
             }
             43 => {
